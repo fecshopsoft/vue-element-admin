@@ -19,10 +19,10 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
       </el-select>
+      <br>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('table.export')}}</el-button>
-      <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('table.reviewer')}}</el-checkbox>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -49,9 +49,9 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="110px" align="left" :label="$t('table.updated_at')">
+      <el-table-column width="110px" align="left" :label="$t('table.birth_date')">
         <template slot-scope="scope">
-          <span>{{scope.row.updated_at | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.birth_date | parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
      
@@ -69,16 +69,40 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
-        
+    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
         
         <el-form-item :label="$t('table.username')" prop="username">
           <el-input v-model="temp.username"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('table.password')">
-          <el-input v-model="temp.password"></el-input>
+        <el-form-item :label="$t('table.email')">
+          <el-input v-model="temp.email"></el-input>
         </el-form-item>
+        <el-form-item :label="$t('table.sex')">
+          <el-select class="filter-item" v-model="temp.sex" placeholder="Please select">
+            <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('table.age')">
+          <el-input v-model="temp.age"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('table.birth_date')" >
+          
+          
+          
+        </el-form-item>
+        <el-form-item :label="$t('table.date')" prop="birth_date">
+          <el-date-picker v-model="temp.birth_date" type="date" placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
+
+
+        <el-form-item :label="$t('table.remark')">
+          <tinymce :height=400 ref="editor" v-model="temp.remark"></tinymce>
+        </el-form-item>
+
         
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -105,7 +129,7 @@
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/customer'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
-
+import Tinymce from '@/components/Tinymce'
 const sexOptions = [
   { key: '1', display_name: 'Man' },
   { key: '2', display_name: 'Women' }
@@ -119,6 +143,7 @@ const sexValue = sexOptions.reduce((acc, cur) => {
 
 export default {
   name: 'complexTable',
+  components: { Tinymce },
   directives: {
     waves
   },
@@ -142,13 +167,18 @@ export default {
       },
       idOptions: [1, 2, 3],
       sexOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
+      sortOptions: [
+        { label: 'ID Ascending', key: '+id' },
+        { label: 'ID Descending', key: '-id' },
+        { label: 'CreatedAt Ascending', key: '+created_at' },
+        { label: 'CreatedAt Descending', key: '-created_at' }
+      ],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
         id: undefined,
         remark: '',
-        timestamp: new Date(),
+        birth_date: new Date(),
         username: '',
         type: '',
         status: 'published'
@@ -163,7 +193,7 @@ export default {
       pvData: [],
       rules: {
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+        birth_date: [{ type: 'date', required: true, message: 'birth_date is required', trigger: 'change' }],
         username: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false
@@ -227,7 +257,7 @@ export default {
       this.temp = {
         id: undefined,
         remark: '',
-        timestamp: new Date(),
+        birth_date: new Date(),
         username: '',
         status: 'published',
         type: ''
@@ -261,7 +291,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp.birth_date = new Date(this.temp.birth_date * 1000)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -272,7 +302,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.birth_date = +new Date(tempData.birth_date / 1000) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           updateArticle(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
@@ -311,8 +341,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'username', 'type', 'id', 'status']
-        const filterVal = ['timestamp', 'username', 'type', 'id', 'status']
+        const tHeader = ['birth_date', 'username', 'type', 'id', 'status']
+        const filterVal = ['birth_date', 'username', 'type', 'id', 'status']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel(tHeader, data, 'table-list')
         this.downloadLoading = false
@@ -320,7 +350,7 @@ export default {
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
+        if (j === 'birth_date') {
           return parseTime(v[j])
         } else {
           return v[j]
