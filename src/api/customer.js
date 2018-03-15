@@ -7,34 +7,35 @@ export function fetchList(query) {
     params: query
   })
 }
-
+/*
 export function fetchArticle() {
   return request({
     url: '/article/detail',
     method: 'get'
   })
 }
+*/
 
-export function fetchPv(pv) {
+export function createOne(data) {
   return request({
-    url: '/article/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
-
-export function createArticle(data) {
-  return request({
-    url: '/article/create',
+    url: '/v1/customer/addone',
     method: 'post',
     data
   })
 }
 
-export function updateArticle(data) {
+export function updateOne(data) {
   return request({
-    url: '/article/update',
+    url: '/v1/customer/updateone',
     method: 'post',
     data
+  })
+}
+
+export function deleteOne(delete_id) {
+  var url = '/v1/customers/id/' + delete_id
+  return request({
+    url: url,
+    method: 'delete'
   })
 }

@@ -48,6 +48,8 @@ export default {
   },
   watch: {
     value(val) {
+      // 更多资料参看： https://segmentfault.com/a/1190000009621081
+      // alert(this.hasChange + '&&' + this.hasInit)
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() => window.tinymce.get(this.tinymceId).setContent(val))
       }

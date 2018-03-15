@@ -45,20 +45,20 @@
       </el-table-column>
       <el-table-column width="110px" align="left" :label="$t('table.created_at')">
         <template slot-scope="scope">
-          <span>{{scope.row.created_at | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.created_at  | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
         </template>
       </el-table-column>
       
       <el-table-column width="110px" align="left" :label="$t('table.birth_date')">
         <template slot-scope="scope">
-          <span>{{scope.row.birth_date | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.birth_date | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
         </template>
       </el-table-column>
      
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
-          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('table.delete')}}
+          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -79,31 +79,25 @@
           <el-input v-model="temp.email"></el-input>
         </el-form-item>
         <el-form-item :label="$t('table.sex')">
-          <el-select class="filter-item" v-model="temp.sex" placeholder="Please select">
+          <el-select clearable class="filter-item" v-model="temp.sex" placeholder="Please select">
             <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
+         
         </el-form-item>
         <el-form-item :label="$t('table.age')">
           <el-input v-model="temp.age"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('table.birth_date')" >
-          
-          
-          
-        </el-form-item>
-        <el-form-item :label="$t('table.date')" prop="birth_date">
+        
+        <el-form-item :label="$t('table.birth_date')" prop="birth_date">
           <el-date-picker v-model="temp.birth_date" type="date" placeholder="Please pick a date">
           </el-date-picker>
         </el-form-item>
 
-
-
-        <el-form-item :label="$t('table.remark')">
+        <el-form-item :label="$t('table.remark')" >
           <tinymce :height=400 ref="editor" v-model="temp.remark"></tinymce>
         </el-form-item>
 
-        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{$t('table.cancel')}}</el-button>
@@ -126,25 +120,27 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/customer'
+// 导入用于ajax的函数
+import { fetchList, createOne, updateOne, deleteOne } from '@/api/customer'
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-import Tinymce from '@/components/Tinymce'
-const sexOptions = [
-  { key: '1', display_name: 'Man' },
-  { key: '2', display_name: 'Women' }
+import { parseTime } from '@/utils' // 时间格式处理
+import Tinymce from '@/components/Tinymce' // 富文本编辑框
+const sexOptions = [ // 性别数组，用于生成sex select
+  { key: 1, display_name: 'Man' },
+  { key: 2, display_name: 'Women' }
 ]
 
-// arr to obj ,such as { CN : "China", US : "USA" }
+/* 废弃
 const sexValue = sexOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
 }, {})
+*/
 
 export default {
   name: 'complexTable',
   components: { Tinymce },
-  directives: {
+  directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
     waves
   },
   data() {
@@ -153,28 +149,26 @@ export default {
       list: null,
       total: null,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        id: undefined,
-        username: undefined,
-        type: undefined,
-        created_begin: undefined,
-        created_end: undefined,
-        created_begin_timestamps: undefined,
-        created_end_timestamps: undefined,
-        sort: '+id'
+      listQuery: { // 当前的查询参数值
+        page: 1, // 页数
+        limit: 20, // 每页的默认显示数据行数
+        // id: undefined
+        username: undefined, // 按照username搜索
+        // type: undefined,
+        created_begin: undefined, // 搜索开始时间
+        created_end: undefined, // 搜索结束时间
+        created_begin_timestamps: undefined, // 搜索开始时间戳
+        created_end_timestamps: undefined, // 搜索结束时间戳
+        sort: '+id' // 排序的字段，默认为id升序排序
       },
       idOptions: [1, 2, 3],
-      sexOptions,
-      sortOptions: [
+      sexOptions, // 相当于 sexOptions： sexOptions， 直接将上面定义的 sexOptions作为值，赋予 sexOptions 参数 ，该参数为了生成sex select
+      sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
         { label: 'ID Descending', key: '-id' },
         { label: 'CreatedAt Ascending', key: '+created_at' },
         { label: 'CreatedAt Descending', key: '-created_at' }
       ],
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
       temp: {
         id: undefined,
         remark: '',
@@ -196,10 +190,17 @@ export default {
         birth_date: [{ type: 'date', required: true, message: 'birth_date is required', trigger: 'change' }],
         username: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
+      // tinymce_remark: '',
       downloadLoading: false
     }
   },
+  // 过滤器，譬如下面的dateFilter，在上面代码可以看到应用：
+  // {{scope.row.created_at  | parseTime('{y}-{m}-{d}') | dateFilter() }}
+  // 上面中的 | 类似linux的管道，将上面的结果作为下面函数的输入的第一个参数
+  // 因此 scope.row.created_at 的值将作为过滤器 parseTime(value,'{y}-{m}-{d}') 函数的value参数传入
+  // 得到的结果，将作为 dateFilter(value) 函数的第一个参数value，传入
   filters: {
+    /* 废弃
     statusFilter(status) {
       const statusMap = {
         published: 'success',
@@ -210,12 +211,24 @@ export default {
     },
     typeFilter(type) {
       return sexValue[type]
+    },
+    */
+    dateFilter(value) {
+      if (value === '1970-01-01') {
+        return ''
+      } else {
+        return value
+      }
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    // 得到数据的函数，当操作分页，搜索，排序，切换每页产品数等操作，都会执行该函数
+    // 该函数前面将数据进行了一部分处理，后面通过ajax进行服务器请求，
+    // 通过这个代码，import { fetchList, createOne, updateOne } from '@/api/customer' 可以知道 fetchList 是 @/api/customer.vue文件，我们打开这个文件
+    // 可以在 @/api/customer.vue 中找到函数 fetchList() , 该函数进行的ajax请求，获取数据。
     getList() {
       this.listLoading = true
       if (this.listQuery.created_begin) {
@@ -234,35 +247,85 @@ export default {
         this.listLoading = false
       })
     },
+    // 点击搜索，排序部分功能 执行的函数
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
+    // toolbar - 切换每页页数，执行的函数
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
     },
+    // toolbar - 点击分页页数，执行的函数
     handleCurrentChange(val) {
       this.listQuery.page = val
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
+    // 列表中点击delete按钮，进行数据删除的函数
+    handleModifyStatus(row, index) {
+      // 弹框提示，是否继续删除操作，关于element ui 弹框组件参看：http://element.eleme.io/#/zh-CN/component/message-box
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // const tempData = Object.assign({}, row) // copy obj
+        // 进行删除操作
+        deleteOne(row.id).then(response => {
+          var code = response.code
+          var data = response.data
+          console.log(data)
+          if (code === 20000) {
+            console.log(code)
+            var affected = data.affected
+            if (affected > 0) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '该数据不存在于数据库',
+                type: 'warning'
+              })
+            }
+            this.list.splice(index, 1) // 在table中删除改行数据
+          } else {
+            this.$message({
+              message: '删除失败',
+              type: 'error'
+            })
+          }
+          this.dialogFormVisible = false
+        }).catch(() => {
+          this.$message({
+            message: '删除失败',
+            type: 'error'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-      row.status = status
+      // row.status = status
+      // 关于 element ui message  参看 http://element.eleme.io/#/zh-CN/component/message
     },
+    // 在 handleCreate 函数中被调动，用来清空或初始化相应的项
     resetTemp() {
       this.temp = {
         id: undefined,
         remark: '',
         birth_date: new Date(),
+        email: '',
         username: '',
         status: 'published',
-        type: ''
+        age: ''
       }
     },
+    // 点击add按钮，弹出的数据层，初始化数据的函数。
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -271,12 +334,13 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // add 创建新数据的函数
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
+          createOne(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -289,21 +353,48 @@ export default {
         }
       })
     },
+    // 此函数为：点击edit 弹出更新form窗口的时候，可以对传递的数据，在此函数中进行处理
+    // 譬如下面的birth_date,从数据库里面取出来的是秒时间戳，而element ui中使用的是毫秒时间戳，因此转换成了毫秒时间戳
+    // 下面的sex ，在go语言中，如果从数据库取出来为null，那么在go里面会被初始化成0，但是在element中，需要改成undefined 来对应数据库的null
     handleUpdate(row) {
+      // this.$refs.editor.destroyTinymce()
+      // console.log(this.$refs)
+      // console.log(this.$refs.editor)
+      var refs = this.$refs
+      if (refs.hasOwnProperty('editor')) {
+        // 处理 editor Tinymce ，点击edit，不更新内容到dialog的问题修复
+        // 通过销毁，重建的方式。
+        refs.editor.setContent('')
+        refs.editor.destroyTinymce()
+        refs.editor.initTinymce()
+        refs.editor.setContent(this.temp.remark)
+      }
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.birth_date = new Date(this.temp.birth_date * 1000)
+      if (this.temp.birth_date) {
+        this.temp.birth_date = new Date(this.temp.birth_date * 1000)
+      }
+      if (!this.temp.sex) {
+        this.temp.sex = undefined
+      }
+      if (!this.temp.age) {
+        this.temp.age = undefined
+      }
+      // this.tinymce_remark = this.temp.remark
+      // alert(3333)
+      // alertalert(this.tinymce_remark)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 更新提交的函数
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.birth_date = +new Date(tempData.birth_date / 1000) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          updateOne(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -331,12 +422,6 @@ export default {
       })
       const index = this.list.indexOf(row)
       this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
     },
     handleDownload() {
       this.downloadLoading = true
