@@ -27,7 +27,7 @@ export function createOne(data) {
 export function updateOne(data) {
   return request({
     url: '/v1/customer/updateone',
-    method: 'post',
+    method: 'PATCH',
     data
   })
 }
@@ -37,5 +37,16 @@ export function deleteOne(delete_id) {
   return request({
     url: url,
     method: 'delete'
+  })
+}
+
+export function batchDelete(delete_ids) {
+  var url = '/v1/customer/batch'
+  return request({
+    url: url,
+    method: 'delete',
+    data: {
+      ids: delete_ids
+    }
   })
 }

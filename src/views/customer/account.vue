@@ -22,11 +22,15 @@
       <br>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('table.export')}}</el-button>
+      <el-button class="filter-item" type="primary"  v-waves icon="el-icon-delete" @click="handleBatchDelete">{{$t('table.batch_delete')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
+      style="width: 100%"  @selection-change="changeFun" >
+
+      <el-table-column type="selection" width="55" class="selection" prop='uuid' @selection-change="changeFun">
+      </el-table-column>
+
       <el-table-column align="left" :label="$t('table.id')" width="65">
         <template slot-scope="scope">
           <span>{{scope.row.id}}</span>
@@ -51,7 +55,7 @@
       
       <el-table-column width="110px" align="left" :label="$t('table.birth_date')">
         <template slot-scope="scope">
-          <span>{{scope.row.birth_date | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
+          <span>{{scope.row.birth_date * 1000 | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
         </template>
       </el-table-column>
      
@@ -75,7 +79,7 @@
         <el-form-item :label="$t('table.username')" prop="username">
           <el-input v-model="temp.username"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('table.email')">
+        <el-form-item :label="$t('table.email')" prop="email">
           <el-input v-model="temp.email"></el-input>
         </el-form-item>
         <el-form-item :label="$t('table.sex')">
@@ -85,7 +89,7 @@
           </el-select>
          
         </el-form-item>
-        <el-form-item :label="$t('table.age')">
+        <el-form-item :label="$t('table.age')" prop="age">
           <el-input v-model="temp.age"></el-input>
         </el-form-item>
         
@@ -121,7 +125,7 @@
 
 <script>
 // 导入用于ajax的函数
-import { fetchList, createOne, updateOne, deleteOne } from '@/api/customer'
+import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils' // 时间格式处理
 import Tinymce from '@/components/Tinymce' // 富文本编辑框
@@ -147,6 +151,7 @@ export default {
     return {
       tableKey: 0,
       list: null,
+      multipleSelection: [],
       total: null,
       listLoading: true,
       listQuery: { // 当前的查询参数值
@@ -172,10 +177,11 @@ export default {
       temp: {
         id: undefined,
         remark: '',
-        birth_date: new Date(),
+        birth_date: '',
         username: '',
-        type: '',
-        status: 'published'
+        email: '',
+        age: '',
+        sex: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -186,9 +192,11 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        birth_date: [{ type: 'date', required: true, message: 'birth_date is required', trigger: 'change' }],
-        username: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        // type: [{ required: true, message: 'type is required', trigger: 'change' }],
+        email: [{ type: 'email', required: true, message: 'Please input the correct email address', trigger: 'blur,change' }],
+        birth_date: [{ type: 'date', message: 'birth_date is required', trigger: 'change' }],
+        username: [{ required: true, message: 'title is required', trigger: 'blur' }],
+        age: [{ type: 'number', message: 'Please enter number', trigger: 'blur' }]
       },
       // tinymce_remark: '',
       downloadLoading: false
@@ -225,6 +233,19 @@ export default {
     this.getList()
   },
   methods: {
+    changeFun(val) {
+      this.multipleSelection = val
+      // console.log(val)
+    },
+    isNumber(val) {
+      var regPos = /^\d+(\.\d+)?$/ // 非负浮点数
+      var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/ // 负浮点数
+      if (regPos.test(val) || regNeg.test(val)) {
+        return true
+      } else {
+        return false
+      }
+    },
     // 得到数据的函数，当操作分页，搜索，排序，切换每页产品数等操作，都会执行该函数
     // 该函数前面将数据进行了一部分处理，后面通过ajax进行服务器请求，
     // 通过这个代码，import { fetchList, createOne, updateOne } from '@/api/customer' 可以知道 fetchList 是 @/api/customer.vue文件，我们打开这个文件
@@ -318,11 +339,22 @@ export default {
       this.temp = {
         id: undefined,
         remark: '',
-        birth_date: new Date(),
+        birth_date: '',
         email: '',
         username: '',
-        status: 'published',
+        sex: '',
         age: ''
+      }
+      var refs = this.$refs
+      console.log(1)
+      if (refs.hasOwnProperty('editor')) {
+        console.log(2)
+        // 处理 editor Tinymce ，点击edit，不更新内容到dialog的问题修复
+        // 通过销毁，重建的方式。
+        refs.editor.setContent('')
+        refs.editor.destroyTinymce()
+        refs.editor.initTinymce()
+        console.log(this.temp.remark)
       }
     },
     // 点击add按钮，弹出的数据层，初始化数据的函数。
@@ -338,17 +370,27 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createOne(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
+          const tempData = Object.assign({}, this.temp)
+          console.log(tempData.birth_date)
+          console.log(Date.parse(new Date(tempData.birth_date)))
+          var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.birth_date = birth_date
+          tempData.age = parseInt(tempData.age)
+          console.log(tempData.birth_date)
+          console.log(tempData.remark)
+          console.log(this.temp.remark)
+          createOne(tempData).then(() => {
+            // this.temp.birth_date = birth_date
+            // this.list.unshift(this.tempData)
+            // this.dialogFormVisible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
               type: 'success',
               duration: 2000
             })
+            this.dialogFormVisible = false
+            this.getList()
           })
         }
       })
@@ -361,16 +403,20 @@ export default {
       // console.log(this.$refs)
       // console.log(this.$refs.editor)
       var refs = this.$refs
+      console.log(1)
       if (refs.hasOwnProperty('editor')) {
+        console.log(2)
         // 处理 editor Tinymce ，点击edit，不更新内容到dialog的问题修复
         // 通过销毁，重建的方式。
         refs.editor.setContent('')
         refs.editor.destroyTinymce()
         refs.editor.initTinymce()
         refs.editor.setContent(this.temp.remark)
+        console.log(this.temp.remark)
       }
       this.temp = Object.assign({}, row) // copy obj
-      if (this.temp.birth_date) {
+      console.log(this.temp.remark)
+      if (this.temp.birth_date && this.isNumber(this.temp.birth_date)) {
         this.temp.birth_date = new Date(this.temp.birth_date * 1000)
       }
       if (!this.temp.sex) {
@@ -393,12 +439,22 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.birth_date = +new Date(tempData.birth_date / 1000) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          console.log(tempData.birth_date)
+          console.log(Date.parse(new Date(tempData.birth_date)))
+          var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.birth_date = birth_date
+          tempData.age = parseInt(tempData.age)
+          console.log(tempData.birth_date)
+          console.log(tempData.remark)
+          console.log(this.temp.remark)
           updateOne(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
+                this.temp.birth_date = birth_date
+                console.log(555)
+                console.log(tempData)
+                this.list.splice(index, 1, tempData)
                 break
               }
             }
@@ -422,6 +478,58 @@ export default {
       })
       const index = this.list.indexOf(row)
       this.list.splice(index, 1)
+    },
+    handleBatchDelete() {
+      // 弹框提示，是否继续删除操作，关于element ui 弹框组件参看：http://element.eleme.io/#/zh-CN/component/message-box
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var multipleSelection = this.multipleSelection
+        var ids = []
+        for (var x in multipleSelection) {
+          ids.push(multipleSelection[x].id)
+        }
+        // 进行删除操作
+        batchDelete(ids).then(response => {
+          var code = response.code
+          var data = response.data
+          console.log(data)
+          if (code === 20000) {
+            console.log(code)
+            var affected = data.affected
+            if (affected > 0) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '该数据不存在于数据库',
+                type: 'warning'
+              })
+            }
+            this.getList()
+          } else {
+            this.$message({
+              message: '删除失败',
+              type: 'error'
+            })
+          }
+          this.dialogFormVisible = false
+        }).catch(() => {
+          this.$message({
+            message: '删除失败',
+            type: 'error'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     handleDownload() {
       this.downloadLoading = true

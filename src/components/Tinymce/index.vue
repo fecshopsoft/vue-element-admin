@@ -79,6 +79,8 @@ export default {
         powerpaste_word_import: 'clean',
         code_dialog_height: 450,
         code_dialog_width: 1000,
+        mode: 'textareas',
+        forced_root_block: false,
         advlist_bullet_styles: 'square',
         advlist_number_styles: 'default',
         imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
