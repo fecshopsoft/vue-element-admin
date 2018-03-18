@@ -1,5 +1,8 @@
 export default {
   route: {
+    system: '控制面板',
+    account_list: '账户列表',
+    my_account: '我的账户',
     dashboard: '首页',
     introduction: '简述',
     documentation: '文档',
@@ -105,7 +108,21 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定'
+    confirm: '确 定',
+    username: '用户名',
+    password: '密码',
+    email: '邮箱',
+    created_at: '创建时间',
+    birth_date: '生日',
+    batch_delete: '批量删除',
+    created_begin: '创建开始时间',
+    created_end: '创建结束时间',
+    age: '年龄',
+    telephone: '电话',
+    name: '姓名',
+    new_password: '新密码',
+    confirm_password: '确认密码',
+    sex: '性别'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

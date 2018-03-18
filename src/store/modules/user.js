@@ -35,6 +35,9 @@ const user = {
     SET_NAME: (state, name) => {
       state.name = name
     },
+    SET_PERSION: (state, persion_name) => {
+      state.persion_name = persion_name
+    },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
@@ -69,6 +72,7 @@ const user = {
           const data = response.data
           commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.name)
+          commit('SET_PERSION', data.persion_name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
           resolve(response)

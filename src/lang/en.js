@@ -1,5 +1,8 @@
 export default {
   route: {
+    system: 'System',
+    account_list: 'Account List',
+    my_account: 'My Account',
     dashboard: 'Dashboard',
     introduction: 'Introduction',
     documentation: 'Documentation',
@@ -105,7 +108,25 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    username: 'UserName',
+    password: 'Password',
+    email: 'Email',
+    created_at: 'Created',
+    birth_date: 'Birth Date',
+    batch_delete: 'Batch Delete',
+    created_begin: 'Created Begin',
+    created_end: 'Created End',
+    age: 'Age',
+    telephone: 'Telephone',
+    name: 'name',
+    new_password: 'New Password',
+    confirm_password: 'Confirm Password',
+    sex: 'sex'
+    // id_asc: 'ID Ascending',
+    // id_desc: 'ID Descending',
+    // created_at_asc: 'CreatedAt Ascending',
+    // created_at_desc: 'CreatedAt Descending'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

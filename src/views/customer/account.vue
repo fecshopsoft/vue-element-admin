@@ -15,6 +15,10 @@
         <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
+      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
+        <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        </el-option>
+      </el-select>
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
@@ -42,9 +46,14 @@
           <span class="link-type">{{scope.row.username}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="410px" align="left" :label="$t('table.email')">
+      <el-table-column width="300px" align="left" :label="$t('table.email')">
         <template slot-scope="scope">
           <span>{{scope.row.email}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="80px" align="left" :label="$t('table.status')">
+        <template slot-scope="scope">
+          <span>{{scope.row.status | parseStatus}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110px" align="left" :label="$t('table.created_at')">
@@ -79,15 +88,31 @@
         <el-form-item :label="$t('table.username')" prop="username">
           <el-input v-model="temp.username"></el-input>
         </el-form-item>
+        <el-form-item :label="$t('table.password')" >
+          <el-input type="password" v-model="temp.password"></el-input>
+        </el-form-item>
         <el-form-item :label="$t('table.email')" prop="email">
           <el-input v-model="temp.email"></el-input>
         </el-form-item>
+
+        <el-form-item :label="$t('table.telephone')" prop="telephone">
+          <el-input v-model="temp.telephone"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('table.name')" prop="name">
+          <el-input v-model="temp.name"></el-input>
+        </el-form-item>
+
         <el-form-item :label="$t('table.sex')">
           <el-select clearable class="filter-item" v-model="temp.sex" placeholder="Please select">
             <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
-         
+        </el-form-item>
+        <el-form-item :label="$t('table.status')">
+          <el-select clearable class="filter-item" v-model="temp.status" placeholder="Please select">
+            <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item :label="$t('table.age')" prop="age">
           <el-input v-model="temp.age"></el-input>
@@ -109,43 +134,28 @@
         <el-button v-else type="primary" @click="updateData">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
-
-    <el-dialog title="Reading statistics" :visible.sync="dialogPvVisible">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel"> </el-table-column>
-        <el-table-column prop="pv" label="Pv"> </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{$t('table.confirm')}}</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
-// 导入用于ajax的函数
+// 从api包中导入用于ajax的函数
 import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils' // 时间格式处理
 import Tinymce from '@/components/Tinymce' // 富文本编辑框
-const sexOptions = [ // 性别数组，用于生成sex select
+const sexOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
   { key: 1, display_name: 'Man' },
   { key: 2, display_name: 'Women' }
 ]
-
-/* 废弃
-const sexValue = sexOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
-*/
-
+const statusOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
+  { key: 1, display_name: 'Enable' },
+  { key: 2, display_name: 'Disable' }
+]
 export default {
   name: 'complexTable',
-  components: { Tinymce },
+  components: { Tinymce }, // 引入的组件
   directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
-    waves
+    waves // 点击按钮出现水波纹
   },
   data() {
     return {
@@ -154,6 +164,7 @@ export default {
       multipleSelection: [],
       total: null,
       listLoading: true,
+      // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值
         page: 1, // 页数
         limit: 20, // 每页的默认显示数据行数
@@ -167,6 +178,7 @@ export default {
         sort: '+id' // 排序的字段，默认为id升序排序
       },
       idOptions: [1, 2, 3],
+      statusOptions,
       sexOptions, // 相当于 sexOptions： sexOptions， 直接将上面定义的 sexOptions作为值，赋予 sexOptions 参数 ，该参数为了生成sex select
       sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
@@ -174,32 +186,34 @@ export default {
         { label: 'CreatedAt Ascending', key: '+created_at' },
         { label: 'CreatedAt Descending', key: '-created_at' }
       ],
-      temp: {
+      temp: { // update , create 数据的时候，会把数据放到该变量中。
         id: undefined,
         remark: '',
         birth_date: '',
         username: '',
+        password: '',
         email: '',
         age: '',
+        name: '',
+        telephone: '',
+        status: '',
         sex: ''
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
+      dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
+      dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
+      textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',
         create: 'Create'
       },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
+      rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
         // type: [{ required: true, message: 'type is required', trigger: 'change' }],
         email: [{ type: 'email', required: true, message: 'Please input the correct email address', trigger: 'blur,change' }],
         birth_date: [{ type: 'date', message: 'birth_date is required', trigger: 'change' }],
-        username: [{ required: true, message: 'title is required', trigger: 'blur' }],
-        age: [{ type: 'number', message: 'Please enter number', trigger: 'blur' }]
-      },
-      // tinymce_remark: '',
-      downloadLoading: false
+        username: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        // password: [{ type: 'password', message: 'birth_date is required', trigger: 'change' }],
+        // age: [{ type: 'number', message: 'Please enter number', trigger: 'blur' }]
+      }
+      // downloadLoading: false // 下载部分
     }
   },
   // 过滤器，譬如下面的dateFilter，在上面代码可以看到应用：
@@ -221,6 +235,15 @@ export default {
       return sexValue[type]
     },
     */
+    parseStatus(status) {
+      for (var x in statusOptions) {
+        var y = statusOptions[x]
+        if (status === y.key) {
+          return y.display_name
+        }
+      }
+      return ''
+    },
     dateFilter(value) {
       if (value === '1970-01-01') {
         return ''
@@ -233,10 +256,11 @@ export default {
     this.getList()
   },
   methods: {
-    changeFun(val) {
+    changeFun(val) { // table列表部分，点击左侧的checkbox的时候，就会把勾选的行的数据赋值给 this.multipleSelection
       this.multipleSelection = val
       // console.log(val)
     },
+    // 是否是数字，通过正则
     isNumber(val) {
       var regPos = /^\d+(\.\d+)?$/ // 非负浮点数
       var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/ // 负浮点数
@@ -343,6 +367,9 @@ export default {
         email: '',
         username: '',
         sex: '',
+        name: '',
+        telephone: '',
+        status: '',
         age: ''
       }
       var refs = this.$refs
@@ -422,12 +449,12 @@ export default {
       if (!this.temp.sex) {
         this.temp.sex = undefined
       }
+      if (!this.temp.status) {
+        this.temp.status = undefined
+      }
       if (!this.temp.age) {
         this.temp.age = undefined
       }
-      // this.tinymce_remark = this.temp.remark
-      // alert(3333)
-      // alertalert(this.tinymce_remark)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -448,16 +475,7 @@ export default {
           console.log(tempData.remark)
           console.log(this.temp.remark)
           updateOne(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.temp.birth_date = birth_date
-                console.log(555)
-                console.log(tempData)
-                this.list.splice(index, 1, tempData)
-                break
-              }
-            }
+            this.getList()
             this.dialogFormVisible = false
             this.$notify({
               title: '成功',
@@ -531,6 +549,7 @@ export default {
         })
       })
     },
+    /*
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
@@ -541,6 +560,7 @@ export default {
         this.downloadLoading = false
       })
     },
+    */
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'birth_date') {

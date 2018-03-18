@@ -34,18 +34,6 @@ export const constantRouterMap = [
   { path: '/401', component: _import('errorPage/401'), hidden: true },
 
   {
-    path: '/customer',
-    component: Layout,
-    redirect: '/customer/account',
-    children: [{
-      path: 'account',
-      component: _import('customer/account'),
-      name: 'customer',
-      meta: { title: 'customer', icon: 'dashboard', noCache: true }
-    }]
-  },
-
-  {
     path: '',
     component: Layout,
     redirect: 'dashboard',
@@ -55,6 +43,20 @@ export const constantRouterMap = [
       name: 'dashboard',
       meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
     }]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'system',
+    meta: {
+      title: 'system',
+      icon: 'clipboard'
+    },
+    children: [
+      { path: 'customer/account', component: _import('customer/account'), name: 'customer-account', meta: { title: 'account_list', icon: 'table' }},
+      { path: 'customer/myaccount', component: _import('customer/myaccount'), name: 'customer-myaccount', meta: { title: 'my_account', icon: 'table' }}
+    ]
   },
   {
     path: '/documentation',

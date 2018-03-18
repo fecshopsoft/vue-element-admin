@@ -50,3 +50,11 @@ export function batchDelete(delete_ids) {
     }
   })
 }
+
+export function updatePassword(data) {
+  return request({
+    url: '/v1/customer/updatepassword',
+    method: 'PATCH',
+    data
+  })
+}
