@@ -54,8 +54,12 @@ export const constantRouterMap = [
       icon: 'clipboard'
     },
     children: [
+      { path: 'customer/myaccount', component: _import('customer/myaccount'), name: 'customer-myaccount', meta: { title: 'my_account', icon: 'table' }},
       { path: 'customer/account', component: _import('customer/account'), name: 'customer-account', meta: { title: 'account_list', icon: 'table' }},
-      { path: 'customer/myaccount', component: _import('customer/myaccount'), name: 'customer-myaccount', meta: { title: 'my_account', icon: 'table' }}
+      { path: 'customer/accountchild', component: _import('customer/accountchild'), name: 'customer-account-child', meta: { title: 'customer_account_child', icon: 'people' }},
+      { path: 'customer/resource', component: _import('customer/resource'), name: 'customer-resource', meta: { title: 'account_resource', icon: 'clipboard' }},
+      { path: 'customer/resourcegroup', component: _import('customer/resourcegroup'), name: 'customer-resource-group', meta: { title: 'account_resource_group', icon: 'excel' }},
+      { path: 'customer/role', component: _import('customer/role'), name: 'customer-role', meta: { title: 'role', icon: 'lock' }}
     ]
   },
   {
