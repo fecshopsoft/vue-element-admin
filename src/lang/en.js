@@ -127,6 +127,11 @@ export default {
     name: 'name',
     new_password: 'New Password',
     confirm_password: 'Confirm Password',
+    resource_group_name: 'Group Name',
+    resource_name: 'Resource Name',
+    url_key: 'Url Key',
+    request_method: 'Req Method',
+    created_customer: 'Created User',
     sex: 'sex'
     // id_asc: 'ID Ascending',
     // id_desc: 'ID Descending',

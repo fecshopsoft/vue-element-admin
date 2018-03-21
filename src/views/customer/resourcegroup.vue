@@ -21,7 +21,7 @@
         </template>
       </el-table-column>
      
-      <el-table-column min-width="150px" align="left" :label="$t('table.name')">
+      <el-table-column min-width="150px" align="left" :label="$t('table.resource_group_name')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.name}}</span>
         </template>
@@ -56,7 +56,7 @@
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
         
-        <el-form-item :label="$t('table.name')" prop="name">
+        <el-form-item :label="$t('table.resource_group_name')" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
       </el-form>

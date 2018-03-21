@@ -127,6 +127,11 @@ export default {
     name: '姓名',
     new_password: '新密码',
     confirm_password: '确认密码',
+    resource_group_name: '资源分组',
+    resource_name: '资源名称',
+    url_key: 'Url Key',
+    request_method: '请求方式',
+    created_customer: '创建人',
     sex: '性别'
   },
   errorLog: {
