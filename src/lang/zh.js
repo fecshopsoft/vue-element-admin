@@ -132,6 +132,9 @@ export default {
     url_key: 'Url Key',
     request_method: '请求方式',
     created_customer: '创建人',
+    role_name: '权限名称',
+    own_name: '拥有者',
+    update_role_resource: '资源',
     sex: '性别'
   },
   errorLog: {

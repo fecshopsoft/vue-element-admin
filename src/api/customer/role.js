@@ -45,3 +45,19 @@ export function batchDelete(delete_ids) {
     }
   })
 }
+
+export function fetchResource(params) {
+  return request({
+    url: '/v1/customer/role/resource/allandselected',
+    method: 'get',
+    params
+  })
+}
+
+export function updateOneResource(data) {
+  return request({
+    url: '/v1/customer/role/resource/updateone',
+    method: 'PATCH',
+    data
+  })
+}

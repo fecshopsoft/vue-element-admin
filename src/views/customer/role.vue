@@ -30,7 +30,7 @@
           <span class="link-type">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="left" :label="$t('table.own_id')">
+      <el-table-column width="150px" align="left" :label="$t('table.own_name')">
         <template slot-scope="scope">
           <span>{{scope.row.own_id | parseOwnName(ownIdOptions) }}</span>
         </template>
@@ -53,9 +53,10 @@
           <span>{{scope.row.updated_at  | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
         </template>
       </el-table-column>
-     
+      
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdateResource(scope.row)">{{$t('table.update_role_resource')}}</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>
@@ -89,12 +90,29 @@
         <el-button v-else type="primary" @click="updateData">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible2">
+      <el-form :rules="rules" ref="dataForm2" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
+        
+        <template v-for="(resources, tab_key) in resourcesArr">
+          <div :key="tab_key" style="margin:10px 0 20px 0">
+            <div style="margin:0px 0 10px 0">{{tab_key}}</div>
+            <el-checkbox v-model="resource.checked" v-for="resource in resources" :label="resource.name" :key="resource.id">{{resource.name}}</el-checkbox>
+          </div>
+        </template>
+
+       
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
+        <el-button  type="primary" @click="updateData2">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-// 从api包中导入用于ajax的函数
-import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer/role'
+// 从api包中导入用于ajax的函数 fetchResource
+import { fetchList, createOne, updateOne, deleteOne, batchDelete, fetchResource, updateOneResource } from '@/api/customer/role'
 import waves from '@/directive/waves' // 水波纹指令
 // import { parseTime } from '@/utils' // 时间格式处理
 // import Tinymce from '@/components/Tinymce' // 富文本编辑框
@@ -108,6 +126,7 @@ const statusOptions = [ // 性别数组，用于生成sex select，在搜索部�
   { key: 2, display_name: 'Disable' }
 ]
 */
+
 export default {
   name: 'roleComplexTable',
   // components: { Tinymce }, // 引入的组件
@@ -116,6 +135,12 @@ export default {
   },
   data() {
     return {
+      // checkAll: {},
+      resourcesArr: {},
+      currentRoleId: undefined,
+      currentOwnId: undefined,
+      // isIndeterminate: {},
+
       tableKey: 0,
       list: null,
       multipleSelection: [],
@@ -134,8 +159,8 @@ export default {
         sort: '+id' // 排序的字段，默认为id升序排序
       },
       ownUsernameOptions: {},
-			createdCustomerOptions: {},
-			ownIdOptions: {},
+      createdCustomerOptions: {},
+      ownIdOptions: {},
       sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
         { label: 'ID Descending', key: '-id' },
@@ -144,13 +169,15 @@ export default {
       ],
       temp: { // update , create 数据的时候，会把数据放到该变量中。
         id: undefined,
-				name: '',
-				created_customer_id: undefined
+        name: '',
+        created_customer_id: undefined
       },
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
+      dialogFormVisible2: false,
       dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
       textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',
+        updateResource: 'Edit Resource',
         create: 'Create'
       },
       rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
@@ -198,17 +225,15 @@ export default {
         }
       }
       return value
-		},
-		parseOwnName(value, ownIdOptions) {
+    },
+    parseOwnName(value, ownIdOptions) {
       for (var x in ownIdOptions) {
         if (ownIdOptions[x]['key'] === value) {
           return ownIdOptions[x]['display_name']
         }
       }
       return value
-		},
-		
-		
+    },
     dateFilter(value) {
       if (value === '1970-01-01') {
         return ''
@@ -221,6 +246,24 @@ export default {
     this.getList()
   },
   methods: {
+    // 全选
+    handleCheckAllChange(tab_key) {
+      // console.log(tab_key)
+      // console.log(cityOptions[tab_key])
+      // console.log(this.checkAll[tab_key])
+      // this.checkedResourceArr[tab_key] = this.checkAll[tab_key] ? cityOptions[tab_key] : []
+      // this.isIndeterminate[tab_key] = false
+    },
+    // 放弃
+    handleCheckedCitiesChange(tab_key) {
+      // var self = this
+      // const checkedCount = this.checkedResourceArr[tab_key].length
+      // console.log(checkedCount)
+      // console.log(cityOptions[tab_key].length)
+      // const checkedCount = tab_key.length
+      // self.isIndeterminate[tab_key] = checkedCount > 0 && checkedCount < cityOptions[tab_key].length
+      // self.checkAll[tab_key] = checkedCount === cityOptions[tab_key].length
+    },
     changeFun(val) { // table列表部分，点击左侧的checkbox的时候，就会把勾选的行的数据赋值给 this.multipleSelection
       this.multipleSelection = val
       // console.log(val)
@@ -255,8 +298,8 @@ export default {
         this.list = response.data.items
         this.total = response.data.total
         this.ownUsernameOptions = response.data.ownUsernameOps
-				this.createdCustomerOptions = response.data.createdCustomerOps
-				this.ownIdOpownIdOptions = response.data.ownIdOps
+        this.createdCustomerOptions = response.data.createdCustomerOps
+        this.ownIdOptions = response.data.ownIdOps
         this.listLoading = false
       })
     },
@@ -311,6 +354,7 @@ export default {
             })
           }
           this.dialogFormVisible = false
+          this.dialogFormVisible2 = false
         }).catch(() => {
           this.$message({
             message: '删除失败',
@@ -330,8 +374,8 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-				name: '',
-				created_customer_id: undefined,
+        name: '',
+        created_customer_id: undefined
       }
     },
     // 点击add按钮，弹出的数据层，初始化数据的函数。
@@ -378,6 +422,20 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    handleUpdateResource(row) {
+      // this.temp = Object.assign({}, row) // copy obj
+      fetchResource({ 'role_id': row.id, 'own_id': row.own_id }).then(response => {
+        this.resourcesArr = Object.assign({}, response.data.allResource)
+        // this.checkedResourceArr = response.data.resourceChecked
+        this.dialogStatus = 'updateResource'
+        this.currentRoleId = row.id
+        this.currentOwnId = row.own_id
+        this.dialogFormVisible2 = true
+        this.$nextTick(() => {
+          this.$refs['dataForm2'].clearValidate()
+        })
+      })
+    },
     // 更新提交的函数
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -392,6 +450,35 @@ export default {
             this.$notify({
               title: '成功',
               message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    // 更新提交的函数
+    updateData2() {
+      this.$refs['dataForm2'].validate((valid) => {
+        if (valid) {
+          // const tempData = Object.assign({}, this.temp)
+          // console.log({ 'role_id': this.currentRoleId, 'resources': this.resourcesArr})
+          var arr = []
+          for (var x in this.resourcesArr) {
+            var resources = this.resourcesArr[x]
+            for (var y in resources) {
+              var resource = resources[y]
+              if (resource.checked === true) {
+                arr.push(resource.id)
+              }
+            }
+          }
+          updateOneResource({ 'own_id': this.currentOwnId, 'role_id': this.currentRoleId, 'resources': arr }).then(() => {
+            this.getList()
+            this.dialogFormVisible2 = false
+            this.$notify({
+              title: '成功',
+              message: '更新资源成功',
               type: 'success',
               duration: 2000
             })

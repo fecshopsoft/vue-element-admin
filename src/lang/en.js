@@ -132,6 +132,9 @@ export default {
     url_key: 'Url Key',
     request_method: 'Req Method',
     created_customer: 'Created User',
+    role_name: 'Role Name',
+    own_name: 'Own Name',
+    update_role_resource: 'Resource',
     sex: 'sex'
     // id_asc: 'ID Ascending',
     // id_desc: 'ID Descending',
