@@ -1,11 +1,11 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.role_name')" v-model="listQuery.name">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.role_name')" v-model="listQuery.name">
       </el-input>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
+      <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
       </el-date-picker>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
+      <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
       <br>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
@@ -100,7 +100,6 @@
           </div>
         </template>
 
-       
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
@@ -126,7 +125,6 @@ const statusOptions = [ // 性别数组，用于生成sex select，在搜索部�
   { key: 2, display_name: 'Disable' }
 ]
 */
-
 export default {
   name: 'roleComplexTable',
   // components: { Tinymce }, // 引入的组件
@@ -135,11 +133,9 @@ export default {
   },
   data() {
     return {
-      // checkAll: {},
       resourcesArr: {},
       currentRoleId: undefined,
       currentOwnId: undefined,
-      // isIndeterminate: {},
 
       tableKey: 0,
       list: null,
@@ -246,7 +242,7 @@ export default {
     this.getList()
   },
   methods: {
-    // 全选
+    // 全选 废弃
     handleCheckAllChange(tab_key) {
       // console.log(tab_key)
       // console.log(cityOptions[tab_key])
@@ -254,7 +250,7 @@ export default {
       // this.checkedResourceArr[tab_key] = this.checkAll[tab_key] ? cityOptions[tab_key] : []
       // this.isIndeterminate[tab_key] = false
     },
-    // 放弃
+    // 废弃
     handleCheckedCitiesChange(tab_key) {
       // var self = this
       // const checkedCount = this.checkedResourceArr[tab_key].length

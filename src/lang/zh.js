@@ -135,6 +135,8 @@ export default {
     role_name: '权限名称',
     own_name: '拥有者',
     update_role_resource: '资源',
+    account_type: '账户类型',
+    account_parent_id: '主账户',
     sex: '性别'
   },
   errorLog: {

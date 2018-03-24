@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.name')" v-model="listQuery.name">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.resource_group_name')" v-model="listQuery.name">
       </el-input>
       <br>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
@@ -116,7 +116,6 @@ export default {
       rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
         name: [{ required: true, message: 'name is required', trigger: 'blur' }]
       }
-      // downloadLoading: false // 下载部分
     }
   },
   // 过滤器，譬如下面的dateFilter，在上面代码可以看到应用：

@@ -1,13 +1,13 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.resource_name')" v-model="listQuery.name">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.resource_name')" v-model="listQuery.name">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.url_key')" v-model="listQuery.url_key">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.url_key')" v-model="listQuery.url_key">
       </el-input>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
+      <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
       </el-date-picker>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
+      <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
 
       <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.request_method" :placeholder="$t('table.request_method')">
@@ -40,12 +40,12 @@
         </template>
       </el-table-column>
      
-      <el-table-column min-width="100px" align="left" :label="$t('table.resource_name')">
+      <el-table-column width="100px" align="left" :label="$t('table.resource_name')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="left" :label="$t('table.url_key')">
+      <el-table-column min-width="100px" align="left" :label="$t('table.url_key')">
         <template slot-scope="scope">
           <span>{{scope.row.url_key}}</span>
         </template>
@@ -58,7 +58,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="left" :label="$t('table.resource_group_name')">
+      <el-table-column width="120px" align="left" :label="$t('table.resource_group_name')">
         <template slot-scope="scope">
           <span>{{scope.row.group_id | parseGroupName(groupOptions)}}</span>
         </template>

@@ -1,20 +1,26 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.username')" v-model="listQuery.username">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.username')" v-model="listQuery.username">
       </el-input>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
+      <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
       </el-date-picker>
-      <el-date-picker @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
+      <el-date-picker clearable  @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.id" :placeholder="$t('table.id')">
-        <el-option v-for="item in idOptions" :key="item" :label="item" :value="item">
+
+
+
+      <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.type" :placeholder="$t('table.account_type')">
+        <el-option v-for="item in  typeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.sex" :placeholder="$t('table.sex')">
-        <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.parent_id" :placeholder="$t('table.account_parent_id')">
+        <el-option v-for="item in  commonAdminOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
+
+
+
       <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
         <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
@@ -46,9 +52,14 @@
           <span class="link-type">{{scope.row.username}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="left" :label="$t('table.email')">
+      <el-table-column width="150px" align="left" :label="$t('table.account_type')">
         <template slot-scope="scope">
-          <span>{{scope.row.email}}</span>
+          <span>{{scope.row.type | parseType(typeOptions)}}</span>
+        </template>
+      </el-table-column>
+       <el-table-column width="110px" align="left" :label="$t('table.account_parent_id')">
+        <template slot-scope="scope">
+          <span>{{scope.row.parent_id | parseCommonAdmin(commonAdminOptions)}}</span>
         </template>
       </el-table-column>
       <el-table-column width="80px" align="left" :label="$t('table.status')">
@@ -114,6 +125,21 @@
             </el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item :label="$t('table.account_type')">
+          <el-select clearable class="filter-item" v-model="temp.type" placeholder="Please select">
+            <el-option v-for="item in  typeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item :label="$t('table.account_parent_id')">
+          <el-select clearable class="filter-item" v-model="temp.parent_id" placeholder="Please select">
+            <el-option v-for="item in  commonAdminOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item :label="$t('table.age')" prop="age">
           <el-input v-model="temp.age"></el-input>
         </el-form-item>
@@ -139,7 +165,7 @@
 
 <script>
 // 从api包中导入用于ajax的函数
-import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer'
+import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer/account'
 import waves from '@/directive/waves' // 水波纹指令
 // import { parseTime } from '@/utils' // 时间格式处理
 import Tinymce from '@/components/Tinymce' // 富文本编辑框
@@ -171,6 +197,8 @@ export default {
         // id: undefined
         username: undefined, // 按照username搜索
         // type: undefined,
+        type: undefined,
+        parent_id: undefined,
         created_begin: undefined, // 搜索开始时间
         created_end: undefined, // 搜索结束时间
         created_begin_timestamps: undefined, // 搜索开始时间戳
@@ -179,6 +207,8 @@ export default {
       },
       idOptions: [1, 2, 3],
       statusOptions,
+      typeOptions: {},
+      commonAdminOptions: {},
       sexOptions, // 相当于 sexOptions： sexOptions， 直接将上面定义的 sexOptions作为值，赋予 sexOptions 参数 ，该参数为了生成sex select
       sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
@@ -197,6 +227,7 @@ export default {
         name: '',
         telephone: '',
         status: '',
+        parent_id: '',
         sex: ''
       },
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
@@ -235,6 +266,22 @@ export default {
       return sexValue[type]
     },
     */
+    parseType(type, typeOptions) {
+      for (var x in typeOptions) {
+        var y = typeOptions[x]
+        if (type === y.key) {
+          return y.display_name
+        }
+      }
+    },
+    parseCommonAdmin(parent_id, commonAdminOptions) {
+      for (var x in commonAdminOptions) {
+        var y = commonAdminOptions[x]
+        if (parent_id === y.key) {
+          return y.display_name
+        }
+      }
+    },
     parseStatus(status) {
       for (var x in statusOptions) {
         var y = statusOptions[x]
@@ -289,6 +336,8 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
+        this.typeOptions = response.data.typeOps
+        this.commonAdminOptions = response.data.commonAdminOps
         this.listLoading = false
       })
     },
@@ -370,6 +419,7 @@ export default {
         name: '',
         telephone: '',
         status: '',
+        parent_id: '',
         age: ''
       }
       var refs = this.$refs
@@ -403,6 +453,8 @@ export default {
           var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           tempData.birth_date = birth_date
           tempData.age = parseInt(tempData.age)
+          tempData.type = parseInt(tempData.type)
+          tempData.parent_id = parseInt(tempData.parent_id)
           console.log(tempData.birth_date)
           console.log(tempData.remark)
           console.log(this.temp.remark)
@@ -452,6 +504,9 @@ export default {
       if (!this.temp.status) {
         this.temp.status = undefined
       }
+      if (!this.temp.parent_id) {
+        this.temp.parent_id = undefined
+      }
       if (!this.temp.age) {
         this.temp.age = undefined
       }
@@ -471,6 +526,8 @@ export default {
           var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           tempData.birth_date = birth_date
           tempData.age = parseInt(tempData.age)
+          tempData.type = parseInt(tempData.type)
+          tempData.parent_id = parseInt(tempData.parent_id)
           console.log(tempData.birth_date)
           console.log(tempData.remark)
           console.log(this.temp.remark)

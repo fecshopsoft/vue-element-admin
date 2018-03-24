@@ -135,6 +135,8 @@ export default {
     role_name: 'Role Name',
     own_name: 'Own Name',
     update_role_resource: 'Resource',
+    account_type: 'Account Type',
+    account_parent_id: 'Common Admin',
     sex: 'sex'
     // id_asc: 'ID Ascending',
     // id_desc: 'ID Descending',
