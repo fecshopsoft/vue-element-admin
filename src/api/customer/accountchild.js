@@ -61,3 +61,19 @@ export function updatePassword(data) {
     data
   })
 }
+
+export function fetchRole(params) {
+  return request({
+    url: '/v1/customer/child/role/allandselected',
+    method: 'get',
+    params
+  })
+}
+
+export function updateOneRole(data) {
+  return request({
+    url: '/v1/customer/child/role/updateone',
+    method: 'PATCH',
+    data
+  })
+}

@@ -302,6 +302,12 @@ export default {
         this.groupOptions = response.data.resourceGrpOps
         this.createdCustomerOptions = response.data.createdCustomerOps
         this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取列表失败',
+          type: 'error'
+        })
       })
     },
     // 点击搜索，排序部分功能 执行的函数
@@ -440,6 +446,12 @@ export default {
               message: '更新成功',
               type: 'success',
               duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '更新失败',
+              type: 'error'
             })
           })
         }

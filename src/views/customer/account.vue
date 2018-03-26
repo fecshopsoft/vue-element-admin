@@ -339,6 +339,12 @@ export default {
         this.typeOptions = response.data.typeOps
         this.commonAdminOptions = response.data.commonAdminOps
         this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取失败',
+          type: 'error'
+        })
       })
     },
     // 点击搜索，排序部分功能 执行的函数
@@ -470,6 +476,12 @@ export default {
             })
             this.dialogFormVisible = false
             this.getList()
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '失败',
+              type: 'error'
+            })
           })
         }
       })
@@ -539,6 +551,12 @@ export default {
               message: '更新成功',
               type: 'success',
               duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '失败',
+              type: 'error'
             })
           })
         }

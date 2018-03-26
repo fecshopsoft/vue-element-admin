@@ -67,6 +67,7 @@
      
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdateRole(scope.row)">{{$t('table.update_customer_role')}}</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>
@@ -131,12 +132,27 @@
         <el-button v-else type="primary" @click="updateData">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible2">
+      <el-form :rules="rules" ref="dataForm2" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
+        
+        <template v-for="(role, tab_key) in rolesArr">
+          <div :key="tab_key" style="margin:10px 0 20px 0">
+            <el-checkbox v-model="role.checked"  :label="role.name" :key="role.id">{{role.name}}</el-checkbox>
+          </div>
+        </template>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
+        <el-button  type="primary" @click="updateData2">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // 从api包中导入用于ajax的函数
-import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/customer/accountchild'
+import { fetchList, createOne, updateOne, deleteOne, batchDelete, fetchRole, updateOneRole } from '@/api/customer/accountchild'
 import waves from '@/directive/waves' // 水波纹指令
 // import { parseTime } from '@/utils' // 时间格式处理
 import Tinymce from '@/components/Tinymce' // 富文本编辑框
@@ -156,6 +172,10 @@ export default {
   },
   data() {
     return {
+      rolesArr: {},
+      currentCustomerId: undefined,
+      currentOwnId: undefined,
+
       tableKey: 0,
       list: null,
       multipleSelection: [],
@@ -196,11 +216,14 @@ export default {
         status: '',
         sex: ''
       },
+      currentCuctomerId: undefined,
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
+      dialogFormVisible2: false,
       dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
       textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',
-        create: 'Create'
+        create: 'Create',
+        updateRole: 'Update Role'
       },
       rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
         // type: [{ required: true, message: 'type is required', trigger: 'change' }],
@@ -253,6 +276,10 @@ export default {
     this.getList()
   },
   methods: {
+    handleCheckAllChange(tab_key) {
+    },
+    handleCheckedCitiesChange(tab_key) {
+    },
     changeFun(val) { // table列表部分，点击左侧的checkbox的时候，就会把勾选的行的数据赋值给 this.multipleSelection
       this.multipleSelection = val
       // console.log(val)
@@ -287,6 +314,12 @@ export default {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取列表失败',
+          type: 'error'
+        })
       })
     },
     // 点击搜索，排序部分功能 执行的函数
@@ -415,6 +448,12 @@ export default {
             })
             this.dialogFormVisible = false
             this.getList()
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '创建失败',
+              type: 'error'
+            })
           })
         }
       })
@@ -458,6 +497,58 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    handleUpdateRole(row) {
+      // this.temp = Object.assign({}, row) // copy obj
+      fetchRole({ 'customer_id': row.id, 'parent_id': row.parent_id }).then(response => {
+        this.rolesArr = Object.assign({}, response.data.allRole)
+        // this.checkedResourceArr = response.data.resourceChecked
+        this.dialogStatus = 'updateRole'
+        this.currentCustomerId = row.id
+        this.currentOwnId = row.own_id
+        this.dialogFormVisible2 = true
+        this.$nextTick(() => {
+          this.$refs['dataForm2'].clearValidate()
+        })
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '更新失败',
+          type: 'error'
+        })
+      })
+    },
+    // 更新提交的函数
+    updateData2() {
+      this.$refs['dataForm2'].validate((valid) => {
+        if (valid) {
+          // const tempData = Object.assign({}, this.temp)
+          // console.log({ 'role_id': this.currentCuctomerId, 'resources': this.resourcesArr})
+          var arr = []
+          for (var x in this.rolesArr) {
+            var role = this.rolesArr[x]
+            if (role.checked === true) {
+              arr.push(role.id)
+            }
+          }
+          updateOneRole({ 'own_id': this.currentOwnId, 'customer_id': this.currentCustomerId, 'roles': arr }).then(() => {
+            this.getList()
+            this.dialogFormVisible2 = false
+            this.$notify({
+              title: '成功',
+              message: '更新资源成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '更新失败',
+              type: 'error'
+            })
+          })
+        }
+      })
+    },
     // 更新提交的函数
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -479,6 +570,12 @@ export default {
               message: '更新成功',
               type: 'success',
               duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '更新失败',
+              type: 'error'
             })
           })
         }

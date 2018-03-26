@@ -80,6 +80,12 @@ export default {
                 duration: 2000
               })
             }
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '失败',
+              type: 'error'
+            })
           })
           this.reset()
         }

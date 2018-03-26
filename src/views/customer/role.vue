@@ -297,6 +297,12 @@ export default {
         this.createdCustomerOptions = response.data.createdCustomerOps
         this.ownIdOptions = response.data.ownIdOps
         this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '更新列表失败',
+          type: 'error'
+        })
       })
     },
     // 点击搜索，排序部分功能 执行的函数
@@ -397,6 +403,12 @@ export default {
             })
             this.dialogFormVisible = false
             this.getList()
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '创建失败',
+              type: 'error'
+            })
           })
         }
       })
@@ -430,6 +442,12 @@ export default {
         this.$nextTick(() => {
           this.$refs['dataForm2'].clearValidate()
         })
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取更新信息失败',
+          type: 'error'
+        })
       })
     },
     // 更新提交的函数
@@ -448,6 +466,12 @@ export default {
               message: '更新成功',
               type: 'success',
               duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '更新失败',
+              type: 'error'
             })
           })
         }
@@ -477,6 +501,12 @@ export default {
               message: '更新资源成功',
               type: 'success',
               duration: 2000
+            })
+          }).catch(() => {
+            this.listLoading = false
+            this.$message({
+              message: '更新失败',
+              type: 'error'
             })
           })
         }

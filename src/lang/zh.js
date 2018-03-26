@@ -137,6 +137,7 @@ export default {
     update_role_resource: '资源',
     account_type: '账户类型',
     account_parent_id: '主账户',
+    update_customer_role: '权限',
     sex: '性别'
   },
   errorLog: {
