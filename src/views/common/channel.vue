@@ -1,19 +1,15 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.username')" v-model="listQuery.username">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('table.channel_name')" v-model="listQuery.channel">
       </el-input>
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_begin')">
       </el-date-picker>
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
-      
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.sex" :placeholder="$t('table.sex')">
-        <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
-        <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+
+      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
+        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
@@ -38,30 +34,26 @@
         </template>
       </el-table-column>
      
-      <el-table-column min-width="150px" align="left" :label="$t('table.username')">
+      <el-table-column width="100px" align="left" :label="$t('table.channel_name')">
         <template slot-scope="scope">
-          <span class="link-type">{{scope.row.username}}</span>
+          <span class="link-type">{{scope.row.channel}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="130px" align="left" :label="$t('table.email')">
+      <el-table-column width="100px" align="left" :label="$t('table.channel_child_name')">
         <template slot-scope="scope">
-          <span>{{scope.row.email}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="80px" align="left" :label="$t('table.status')">
-        <template slot-scope="scope">
-          <span>{{scope.row.status | parseStatus}}</span>
+          <span class="link-type">{{scope.row.channel_child}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="left" :label="$t('table.market_group_name')">
+      <el-table-column min-width="100px" align="left" :label="$t('table.own_name')">
         <template slot-scope="scope">
-          <span>{{scope.row.market_group_id | parseMarketGroup(marketGroupOptions)}}</span>
+          <span>{{scope.row.own_id | parseOwnName(ownNameOptions)}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="80px" align="left" :label="$t('table.job_type_name')">
+
+      <el-table-column width="80px" align="left" :label="$t('table.created_customer')">
         <template slot-scope="scope">
-          <span>{{scope.row.job_type | parseJobType(jobTypeOptions)}}</span>
+          <span>{{scope.row.created_customer_id | parseCreatedCustomer(createdCustomerOptions)}}</span>
         </template>
       </el-table-column>
 
@@ -71,9 +63,14 @@
         </template>
       </el-table-column>
       
+      <el-table-column width="110px" align="left" :label="$t('table.updated_at')">
+        <template slot-scope="scope">
+          <span>{{scope.row.updated_at  | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
+        </template>
+      </el-table-column>
+     
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdateRole(scope.row)">{{$t('table.update_customer_role')}}</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>
@@ -88,63 +85,20 @@
 
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
-        
-        <el-form-item :label="$t('table.username')" prop="username">
-          <el-input v-model="temp.username"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('table.password')" >
-          <el-input type="password" v-model="temp.password"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('table.email')" prop="email">
-          <el-input v-model="temp.email"></el-input>
+        <el-form-item :label="$t('table.channel')" prop="channel">
+          <el-input v-model="temp.channel"></el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('table.telephone')" prop="telephone">
-          <el-input v-model="temp.telephone"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('table.name')" prop="name">
-          <el-input v-model="temp.name"></el-input>
+        <el-form-item :label="$t('table.channel_child')" prop="channel_child">
+          <el-input v-model="temp.channel_child"></el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('table.sex')">
-          <el-select clearable class="filter-item" v-model="temp.sex" placeholder="Please select">
-            <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        <el-form-item :label="$t('table.own_name')" prop="request_method">
+          <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
+            <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('table.status')">
-          <el-select clearable class="filter-item" v-model="temp.status" placeholder="Please select">
-            <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.market_group_name')">
-          <el-select clearable class="filter-item" v-model="temp.market_group_id" placeholder="Please select">
-            <el-option v-for="item in  marketGroupOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('table.job_type_name')">
-          <el-select clearable class="filter-item" v-model="temp.job_type" placeholder="Please select">
-            <el-option v-for="item in  jobTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.age')" prop="age">
-          <el-input v-model="temp.age"></el-input>
-        </el-form-item>
-        
-        <el-form-item :label="$t('table.birth_date')" prop="birth_date">
-          <el-date-picker v-model="temp.birth_date" type="date" placeholder="Please pick a date">
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.remark')" >
-          <tinymce :height=400 ref="editor" v-model="temp.remark"></tinymce>
-        </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{$t('table.cancel')}}</el-button>
@@ -152,30 +106,16 @@
         <el-button v-else type="primary" @click="updateData">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
-    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible2">
-      <el-form :rules="rules" ref="dataForm2" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
-        
-        <template v-for="(role, tab_key) in rolesArr">
-          <div :key="tab_key" style="margin:10px 0 20px 0">
-            <el-checkbox v-model="role.checked"  :label="role.name" :key="role.id">{{role.name}}</el-checkbox>
-          </div>
-        </template>
-
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
-        <el-button  type="primary" @click="updateData2">{{$t('table.confirm')}}</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 // 从api包中导入用于ajax的函数
-import { fetchList, createOne, updateOne, deleteOne, batchDelete, fetchRole, updateOneRole } from '@/api/customer/accountchild'
+import { fetchList, createOne, updateOne, deleteOne, batchDelete } from '@/api/common/channel'
 import waves from '@/directive/waves' // 水波纹指令
 // import { parseTime } from '@/utils' // 时间格式处理
-import Tinymce from '@/components/Tinymce' // 富文本编辑框
+// import Tinymce from '@/components/Tinymce' // 富文本编辑框
+/*
 const sexOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
   { key: 1, display_name: 'Man' },
   { key: 2, display_name: 'Women' }
@@ -184,22 +124,15 @@ const statusOptions = [ // 性别数组，用于生成sex select，在搜索部�
   { key: 1, display_name: 'Enable' },
   { key: 2, display_name: 'Disable' }
 ]
-const jobTypeOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
-  { key: 1, display_name: '营销员' },
-  { key: 2, display_name: '广告美工' }
-]
+*/
 export default {
-  name: 'complexTable',
-  components: { Tinymce }, // 引入的组件
+  name: 'channelComplexTable',
+  // components: { Tinymce }, // 引入的组件
   directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
     waves // 点击按钮出现水波纹
   },
   data() {
     return {
-      rolesArr: {},
-      currentCustomerId: undefined,
-      currentOwnId: undefined,
-
       tableKey: 0,
       list: null,
       multipleSelection: [],
@@ -210,7 +143,8 @@ export default {
         page: 1, // 页数
         limit: 20, // 每页的默认显示数据行数
         // id: undefined
-        username: undefined, // 按照username搜索
+        channel: undefined, // 按照username搜索
+        own_id: undefined,
         // type: undefined,
         created_begin: undefined, // 搜索开始时间
         created_end: undefined, // 搜索结束时间
@@ -218,11 +152,8 @@ export default {
         created_end_timestamps: undefined, // 搜索结束时间戳
         sort: '+id' // 排序的字段，默认为id升序排序
       },
-      idOptions: [1, 2, 3],
-      statusOptions,
-      jobTypeOptions,
-      marketGroupOptions: {},
-      sexOptions, // 相当于 sexOptions： sexOptions， 直接将上面定义的 sexOptions作为值，赋予 sexOptions 参数 ，该参数为了生成sex select
+      ownNameOptions: {},
+      createdCustomerOptions: {},
       sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
         { label: 'ID Descending', key: '-id' },
@@ -231,31 +162,21 @@ export default {
       ],
       temp: { // update , create 数据的时候，会把数据放到该变量中。
         id: undefined,
-        remark: '',
-        birth_date: '',
-        username: '',
-        password: '',
-        email: '',
-        age: '',
         name: '',
-        telephone: '',
-        status: '',
-        sex: ''
+        own_id: '',
+        created_customer_id: ''
       },
-      currentCuctomerId: undefined,
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
-      dialogFormVisible2: false,
       dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
       textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',
-        create: 'Create',
-        updateRole: 'Update Role'
+        create: 'Create'
       },
       rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
         // type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        email: [{ type: 'email', required: true, message: 'Please input the correct email address', trigger: 'blur,change' }],
-        birth_date: [{ type: 'date', message: 'birth_date is required', trigger: 'change' }],
-        username: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        // email: [{ type: 'email', required: true, message: 'Please input the correct email address', trigger: 'blur,change' }],
+        // birth_date: [{ type: 'date', message: 'birth_date is required', trigger: 'change' }],
+        // username: [{ required: true, message: 'title is required', trigger: 'blur' }]
         // password: [{ type: 'password', message: 'birth_date is required', trigger: 'change' }],
         // age: [{ type: 'number', message: 'Please enter number', trigger: 'blur' }]
       }
@@ -280,6 +201,15 @@ export default {
     typeFilter(type) {
       return sexValue[type]
     },
+    */
+    parseOwnName(value, ownNameOptions) {
+      for (var x in ownNameOptions) {
+        if (ownNameOptions[x]['key'] === value) {
+          return ownNameOptions[x]['display_name']
+        }
+      }
+      return value
+    },
     parseCreatedCustomer(value, createdCustomerOptions) {
       for (var x in createdCustomerOptions) {
         if (createdCustomerOptions[x]['key'] === value) {
@@ -287,32 +217,6 @@ export default {
         }
       }
       return value
-    },
-    */
-    parseMarketGroup(value, marketGroupOptions) {
-      for (var x in marketGroupOptions) {
-        if (marketGroupOptions[x]['key'] === value) {
-          return marketGroupOptions[x]['display_name']
-        }
-      }
-      return ''
-    },
-    parseJobType(value, jobTypeOptions) {
-      for (var x in jobTypeOptions) {
-        if (jobTypeOptions[x]['key'] === value) {
-          return jobTypeOptions[x]['display_name']
-        }
-      }
-      return ''
-    },
-    parseStatus(status) {
-      for (var x in statusOptions) {
-        var y = statusOptions[x]
-        if (status === y.key) {
-          return y.display_name
-        }
-      }
-      return ''
     },
     dateFilter(value) {
       if (value === '1970-01-01') {
@@ -326,10 +230,6 @@ export default {
     this.getList()
   },
   methods: {
-    handleCheckAllChange(tab_key) {
-    },
-    handleCheckedCitiesChange(tab_key) {
-    },
     changeFun(val) { // table列表部分，点击左侧的checkbox的时候，就会把勾选的行的数据赋值给 this.multipleSelection
       this.multipleSelection = val
       // console.log(val)
@@ -363,8 +263,9 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
+        this.ownNameOptions = response.data.ownNameOps
+        this.createdCustomerOptions = response.data.createdCustomerOps
         this.listLoading = false
-        this.marketGroupOptions = response.data.marketGroupOps
       }).catch(() => {
         this.listLoading = false
         this.$message({
@@ -443,26 +344,10 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        remark: '',
-        birth_date: '',
-        email: '',
-        username: '',
-        sex: '',
         name: '',
-        telephone: '',
-        status: '',
-        age: ''
-      }
-      var refs = this.$refs
-      console.log(1)
-      if (refs.hasOwnProperty('editor')) {
-        console.log(2)
-        // 处理 editor Tinymce ，点击edit，不更新内容到dialog的问题修复
-        // 通过销毁，重建的方式。
-        refs.editor.setContent('')
-        refs.editor.destroyTinymce()
-        refs.editor.initTinymce()
-        console.log(this.temp.remark)
+        url_key: '',
+        request_method: '',
+        group_id: ''
       }
     },
     // 点击add按钮，弹出的数据层，初始化数据的函数。
@@ -479,18 +364,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          console.log(tempData.birth_date)
-          console.log(Date.parse(new Date(tempData.birth_date)))
-          var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          tempData.birth_date = birth_date
-          tempData.age = parseInt(tempData.age)
-          console.log(tempData.birth_date)
-          console.log(tempData.remark)
-          console.log(this.temp.remark)
           createOne(tempData).then(() => {
-            // this.temp.birth_date = birth_date
-            // this.list.unshift(this.tempData)
-            // this.dialogFormVisible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -499,12 +373,6 @@ export default {
             })
             this.dialogFormVisible = false
             this.getList()
-          }).catch(() => {
-            this.listLoading = false
-            this.$message({
-              message: '创建失败',
-              type: 'error'
-            })
           })
         }
       })
@@ -513,97 +381,17 @@ export default {
     // 譬如下面的birth_date,从数据库里面取出来的是秒时间戳，而element ui中使用的是毫秒时间戳，因此转换成了毫秒时间戳
     // 下面的sex ，在go语言中，如果从数据库取出来为null，那么在go里面会被初始化成0，但是在element中，需要改成undefined 来对应数据库的null
     handleUpdate(row) {
-      // this.$refs.editor.destroyTinymce()
-      // console.log(this.$refs)
-      // console.log(this.$refs.editor)
-      var refs = this.$refs
-      console.log(1)
-      if (refs.hasOwnProperty('editor')) {
-        console.log(2)
-        // 处理 editor Tinymce ，点击edit，不更新内容到dialog的问题修复
-        // 通过销毁，重建的方式。
-        refs.editor.setContent('')
-        refs.editor.destroyTinymce()
-        refs.editor.initTinymce()
-        refs.editor.setContent(this.temp.remark)
-        console.log(this.temp.remark)
-      }
       this.temp = Object.assign({}, row) // copy obj
-      console.log(this.temp.remark)
-      if (this.temp.birth_date && this.isNumber(this.temp.birth_date)) {
-        this.temp.birth_date = new Date(this.temp.birth_date * 1000)
-      }
-      if (!this.temp.sex) {
-        this.temp.sex = undefined
-      }
-      if (!this.temp.status) {
-        this.temp.status = undefined
-      }
-      if (!this.temp.age) {
-        this.temp.age = undefined
-      }
-      if (!this.temp.market_group_id) {
-        this.temp.market_group_id = undefined
-      }
-      if (!this.temp.job_type) {
-        this.temp.job_type = undefined
-      }
+      // if (!this.temp.request_method) {
+      // this.temp.request_method = undefined
+      // }
+      // if (!this.temp.group_id) {
+      // this.temp.group_id = undefined
+      // }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdateRole(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      fetchRole({ 'customer_id': row.id, 'parent_id': row.parent_id }).then(response => {
-        this.rolesArr = Object.assign({}, response.data.allRole)
-        // this.checkedResourceArr = response.data.resourceChecked
-        this.dialogStatus = 'updateRole'
-        this.currentCustomerId = row.id
-        this.currentOwnId = row.own_id
-        this.dialogFormVisible2 = true
-        this.$nextTick(() => {
-          this.$refs['dataForm2'].clearValidate()
-        })
-      }).catch(() => {
-        this.listLoading = false
-        this.$message({
-          message: '更新失败',
-          type: 'error'
-        })
-      })
-    },
-    // 更新提交的函数
-    updateData2() {
-      this.$refs['dataForm2'].validate((valid) => {
-        if (valid) {
-          // const tempData = Object.assign({}, this.temp)
-          // console.log({ 'role_id': this.currentCuctomerId, 'resources': this.resourcesArr})
-          var arr = []
-          for (var x in this.rolesArr) {
-            var role = this.rolesArr[x]
-            if (role.checked === true) {
-              arr.push(role.id)
-            }
-          }
-          updateOneRole({ 'own_id': this.currentOwnId, 'customer_id': this.currentCustomerId, 'roles': arr }).then(() => {
-            this.getList()
-            this.dialogFormVisible2 = false
-            this.$notify({
-              title: '成功',
-              message: '更新资源成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).catch(() => {
-            this.listLoading = false
-            this.$message({
-              message: '更新失败',
-              type: 'error'
-            })
-          })
-        }
       })
     },
     // 更新提交的函数
@@ -611,14 +399,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          console.log(tempData.birth_date)
-          console.log(Date.parse(new Date(tempData.birth_date)))
-          var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          tempData.birth_date = birth_date
-          tempData.age = parseInt(tempData.age)
-          console.log(tempData.birth_date)
-          console.log(tempData.remark)
-          console.log(this.temp.remark)
+          // var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          // tempData.birth_date = birth_date
+          // tempData.age = parseInt(tempData.age)
           updateOne(tempData).then(() => {
             this.getList()
             this.dialogFormVisible = false
