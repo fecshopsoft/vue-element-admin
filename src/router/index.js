@@ -205,7 +205,7 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata2', meta: { title: 'userstics_userdata2', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
     ]
   },
 

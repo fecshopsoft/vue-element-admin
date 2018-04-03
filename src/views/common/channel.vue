@@ -85,15 +85,15 @@
 
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
-        <el-form-item :label="$t('table.channel')" prop="channel">
+        <el-form-item :label="$t('table.channel_name')" prop="channel">
           <el-input v-model="temp.channel"></el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('table.channel_child')" prop="channel_child">
+        <el-form-item :label="$t('table.channel_child_name')" prop="channel_child">
           <el-input v-model="temp.channel_child"></el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('table.own_name')" prop="request_method">
+        <el-form-item :label="$t('table.own_name')" prop="own_name">
           <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
             <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
