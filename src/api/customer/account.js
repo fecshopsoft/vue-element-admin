@@ -32,6 +32,14 @@ export function updateOne(data) {
   })
 }
 
+export function updateOnePayInfo(data) {
+  return request({
+    url: '/v1/customer/updateonepayinfo',
+    method: 'PATCH',
+    data
+  })
+}
+
 export function deleteOne(delete_id) {
   var url = '/v1/customer/deleteone'
   return request({

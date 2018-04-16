@@ -107,6 +107,15 @@
           <el-input v-model="temp.site_name"></el-input>
         </el-form-item>
 
+        <el-form-item v-if="customerType === 1" :label="$t('table.payment_end_time')" prop="payment_end_time">
+          <el-date-picker v-model="temp.payment_end_time" type="date" placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item v-if="customerType === 1"  :label="$t('table.website_day_max_count')" prop="website_day_max_count">
+          <el-input v-model="temp.website_day_max_count"></el-input>
+        </el-form-item>
+
         <el-form-item :label="$t('table.domain')" prop="domain">
           <el-input placeholder="" v-model="temp.domain">
             <template slot="prepend">Http://</template>
@@ -115,6 +124,11 @@
 
         <el-form-item :label="$t('table.trace_js_url')" prop="trace_js_url">
           <el-input placeholder="系统生成，不需要填写" v-model="temp.trace_js_url">
+            <template slot="prepend">Http://</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="$t('table.trace_api_url')" prop="trace_api_url">
+          <el-input placeholder="系统生成，不需要填写" v-model="temp.trace_api_url">
             <template slot="prepend">Http://</template>
           </el-input>
         </el-form-item>
@@ -173,6 +187,26 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item :label="$t('table.search_js')">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.search_js">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('table.example_search_js')">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.example_search_js">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('table.login_js')">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.login_js">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('table.register_js')">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.register_js">
+          </el-input>
+        </el-form-item>
+
         <el-form-item :label="$t('table.order_js')">
           <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.order_js">
           </el-input>
@@ -190,31 +224,6 @@
 
         <el-form-item :label="$t('table.example_success_order_js')">
           <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.example_success_order_js">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.login_js')">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.login_js">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.register_js')">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.register_js">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.search_js')">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.search_js">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.example_search_js')">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.example_search_js">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.currency_js')">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="Please input" v-model="temp.currency_js">
           </el-input>
         </el-form-item>
 
@@ -268,6 +277,7 @@ export default {
       },
       ownNameOptions: {},
       statusOptions,
+      customerType: 0,
       createdCustomerOptions: {},
       sortOptions: [ // 排序部分定义
         { label: 'ID Ascending', key: '+id' },
@@ -389,6 +399,7 @@ export default {
         this.total = response.data.total
         this.ownNameOptions = response.data.ownNameOps
         this.createdCustomerOptions = response.data.createdCustomerOps
+        this.customerType = response.data.customerType
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -488,6 +499,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
+          var payment_end_time = Date.parse(new Date(tempData.payment_end_time)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.payment_end_time = payment_end_time
+          tempData.website_day_max_count = parseInt(tempData.website_day_max_count)
           createOne(tempData).then(() => {
             this.$notify({
               title: '成功',
@@ -518,6 +532,9 @@ export default {
       if (!this.temp.status) {
         this.temp.status = undefined
       }
+      if (this.temp.payment_end_time && this.isNumber(this.temp.payment_end_time)) {
+        this.temp.payment_end_time = new Date(this.temp.payment_end_time * 1000)
+      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -540,7 +557,6 @@ export default {
         this.temp.register_js = response.data.register_js
         this.temp.search_js = response.data.search_js
         this.temp.example_search_js = response.data.example_search_js
-        this.temp.currency_js = response.data.currency_js
         /*
         this.resourcesArr = Object.assign({}, response.data.allResource)
         // this.checkedResourceArr = response.data.resourceChecked
@@ -568,6 +584,9 @@ export default {
           // var birth_date = Date.parse(new Date(tempData.birth_date)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           // tempData.birth_date = birth_date
           // tempData.age = parseInt(tempData.age)
+          var payment_end_time = Date.parse(new Date(tempData.payment_end_time)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.payment_end_time = payment_end_time
+          tempData.website_day_max_count = parseInt(tempData.website_day_max_count)
           updateOne(tempData).then(() => {
             this.getList()
             this.dialogFormVisible = false
