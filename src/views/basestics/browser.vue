@@ -257,6 +257,7 @@
               :id="chart5.id"
               :width="chart5.width"
               :height="chart5.height"
+              :lineData="chart5.lineData"
             ></linechart>
           </div>
         </el-tab-pane>
@@ -324,7 +325,8 @@ export default {
         className: 'chart_5',
         id: 'chart_5',
         width: '1000px',
-        height: '450px'
+        height: '450px',
+        lineData: {}
       },
       tableKey: 0,
       list: null,
@@ -526,6 +528,27 @@ export default {
       var countryCodeData = this.peiFormat(this.temp.country_code)
       this.chart4.legenddata = countryCodeData[0]
       this.chart4.seriesdata = countryCodeData[1]
+      this.chart5.lineData = {
+        '最高气温': {
+          '2018-04-01': 22,
+          '2018-04-02': 12,
+          '2018-04-10': 2,
+          '2018-04-11': 2,
+          '2018-04-12': 22,
+          '2018-04-06': 8,
+          '2018-04-07': 22
+        },
+        '最低气温': {
+          '2018-04-01': 2,
+          '2018-04-02': 52,
+          '2018-04-04': 12,
+          '2018-04-05': 30,
+          '2018-04-06': 22,
+          '2018-04-07': 42,
+          '2018-04-08': 18,
+          '2018-04-09': 32
+        }
+      }
       // this.$nextTick(() => {
       // this.$refs['dataForm'].clearValidate()
       // })
