@@ -5,7 +5,7 @@
       </el-input>
       
       <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
-        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
       </el-select>
 
@@ -106,7 +106,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="90px" align="left" :label="$t('table.success_order_no_count')">
+      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.success_order_no_count')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.success_order_no_count}}</span>
         </template>
@@ -130,19 +130,137 @@
       </el-pagination>
     </div>
 
-    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
-        <el-form-item :label="$t('table.market_group_name')" prop="name">
-          <el-input v-model="temp.name"></el-input>
-        </el-form-item>
+    <el-dialog top="1vh" :title="$t('table.view_info')" :visible.sync="dialogFormVisible">
+      <el-tabs v-model="activeTabName" @tab-click="handleClick">
+        <el-tab-pane :label="$t('table.base_info')" name="first">
+          
+          <el-form  ref="dataForm1" :model="temp" label-position="left" label-width="150px" style='width: 800px; margin-left:50px; margin-top:10px'>
+            <el-form-item :label="$t('table.browser_name')" >
+              <el-input v-model="temp.browser_name"></el-input>
+            </el-form-item>
+            
+            <el-form-item :label="$t('table.service_date_str')" >
+              <el-input v-model="temp.service_date_str"></el-input>
+            </el-form-item>
+            
+            <el-form-item :label="$t('table.stay_seconds')" >
+              <el-input v-model="temp.stay_seconds"></el-input>
+            </el-form-item>
 
-        <el-form-item :label="$t('table.own_name')" prop="request_method">
-          <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
-            <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+            <el-form-item :label="$t('table.stay_seconds_rate')" >
+              <el-input :value="temp.stay_seconds_rate | fixFloat2"></el-input>
+            </el-form-item>
+            
+            <el-form-item :label="$t('table.pv')" >
+              <el-input v-model="temp.pv"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.uv')" >
+              <el-input v-model="temp.uv"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.pv_rate')" >
+              <el-input :value="temp.pv_rate | fixFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.jump_out_count')" >
+              <el-input v-model="temp.jump_out_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.drop_out_count')" >
+              <el-input v-model="temp.drop_out_count"></el-input>
+            </el-form-item>
+            
+            <el-form-item :label="$t('table.jump_out_rate')" >
+              <el-input :value="temp.jump_out_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.drop_out_rate')" >
+              <el-input :value="temp.drop_out_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.cart_count')" >
+              <el-input v-model="temp.cart_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.order_count')" >
+              <el-input v-model="temp.order_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.success_order_count')" >
+              <el-input v-model="temp.success_order_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.success_order_no_count')" >
+              <el-input v-model="temp.success_order_no_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.is_return')" >
+              <el-input v-model="temp.is_return"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.is_return_rate')" >
+              <el-input :value="temp.is_return_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.first_page')" >
+              <el-input v-model="temp.first_page"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.sku_sale_rate')" >
+              <el-input :value="temp.sku_sale_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+          </el-form>
+
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.devide')" name="second">
+          <div class='chart-container'>
+            <piechart 
+              :className="chart2.className" 
+              :id="chart2.id"
+              :width="chart2.width"
+              :height="chart2.height"
+              :legenddata="chart2.legenddata"
+              :seriesdata="chart2.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.operate')" name="third">
+          <div class='chart-container'>
+            <piechart 
+              :className="chart3.className" 
+              :id="chart3.id"
+              :width="chart3.width"
+              :height="chart3.height"
+              :legenddata="chart3.legenddata"
+              :seriesdata="chart3.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.couontry_code')" name="fourth">
+          <div class='chart-container'>
+            <piechart 
+              :className="chart4.className" 
+              :id="chart4.id"
+              :width="chart4.width"
+              :height="chart4.height"
+              :legenddata="chart4.legenddata"
+              :seriesdata="chart4.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="折线" name="fivth">
+          <div class='chart-container'>
+            <linechart 
+              :className="chart5.className" 
+              :id="chart5.id"
+              :width="chart5.width"
+              :height="chart5.height"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{$t('table.cancel')}}</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('table.confirm')}}</el-button>
@@ -155,6 +273,8 @@
 // 从api包中导入用于ajax的函数
 import { fetchList } from '@/api/basestics/browser'
 import waves from '@/directive/waves' // 水波纹指令
+import Linechart from '@/components/Charts/line'
+import Piechart from '@/components/Charts/pie'
 // import { parseTime } from '@/utils' // 时间格式处理
 // import Tinymce from '@/components/Tinymce' // 富文本编辑框
 /*
@@ -169,16 +289,48 @@ const statusOptions = [ // 性别数组，用于生成sex select，在搜索部�
 */
 export default {
   name: 'marketGroupComplexTable',
+  components: { Linechart, Piechart },
   // components: { Tinymce }, // 引入的组件
   directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
     waves // 点击按钮出现水波纹
   },
   data() {
     return {
+      chart2: {
+        className: 'chart_2',
+        id: 'chart_2',
+        width: '800px',
+        height: '450px',
+        legenddata: [],
+        seriesdata: []
+      },
+      chart3: {
+        className: 'chart_3',
+        id: 'chart_3',
+        width: '800px',
+        height: '450px',
+        legenddata: [],
+        seriesdata: []
+      },
+      chart4: {
+        className: 'chart_4',
+        id: 'chart_4',
+        width: '800px',
+        height: '450px',
+        legenddata: [],
+        seriesdata: []
+      },
+      chart5: {
+        className: 'chart_5',
+        id: 'chart_5',
+        width: '1000px',
+        height: '450px'
+      },
       tableKey: 0,
       list: null,
       multipleSelection: [],
       total: null,
+      activeTabName: 'first',
       listLoading: true,
       // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值
@@ -216,6 +368,7 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
+      initComplete: false,
       rules: { // dialog弹框create update数据的时候，填写的数据进行规则验证，采用下面的rules，不知道为什么number不好用，擦！
         // type: [{ required: true, message: 'type is required', trigger: 'change' }],
         // email: [{ type: 'email', required: true, message: 'Please input the correct email address', trigger: 'blur,change' }],
@@ -247,7 +400,7 @@ export default {
     },
     */
     fixFloat2(value) {
-      return value.toFixed(2)
+      return parseFloat(value).toFixed(2)
     },
     rateFloat2(value) {
       return ((100 * value).toFixed(2)) + '%'
@@ -272,10 +425,15 @@ export default {
     this.getList()
   },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
     sortChange(columns, prop, sortDir) {
-      this.listQuery.sort = columns.prop
-      this.listQuery.sort_dir = columns.order
-      this.getList()
+      if (this.initComplete === true) {
+        this.listQuery.sort = columns.prop
+        this.listQuery.sort_dir = columns.order
+        this.getList()
+      }
     },
     changeFun(val) { // table列表部分，点击左侧的checkbox的时候，就会把勾选的行的数据赋值给 this.multipleSelection
       this.multipleSelection = val
@@ -310,6 +468,7 @@ export default {
         this.siteIdOptions = response.data.siteIdOptions
         this.listQuery.website_id = response.data.chosen_website_id
         this.listQuery.own_id = response.data.chosen_own_id
+        this.initComplete = true
         // this.createdCustomerOptions = response.data.createdCustomerOps
         this.listLoading = false
       }).catch(() => {
@@ -358,9 +517,28 @@ export default {
       // }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      var devideData = this.peiFormat(this.temp.devide)
+      this.chart2.legenddata = devideData[0]
+      this.chart2.seriesdata = devideData[1]
+      var operateData = this.peiFormat(this.temp.operate)
+      this.chart3.legenddata = operateData[0]
+      this.chart3.seriesdata = operateData[1]
+      var countryCodeData = this.peiFormat(this.temp.country_code)
+      this.chart4.legenddata = countryCodeData[0]
+      this.chart4.seriesdata = countryCodeData[1]
+      // this.$nextTick(() => {
+      // this.$refs['dataForm'].clearValidate()
+      // })
+    },
+    peiFormat(data) {
+      var legenddata = []
+      var seriesdata = []
+      for (var name in data) {
+        var val = data[name]
+        legenddata.push(name)
+        seriesdata.push({ name: name, value: val })
+      }
+      return [legenddata, seriesdata]
     }
   }
 }
@@ -373,5 +551,10 @@ export default {
   font-size:11px;
 }
 
-
+.chart-container{
+  position: relative;
+  padding: 20px;
+  width: 100%;
+  height:85vh;
+}
 </style>

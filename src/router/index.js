@@ -267,16 +267,17 @@ export const asyncRouterMap = [
     path: '/charts',
     component: Layout,
     redirect: 'noredirect',
-    hidden: true,
+    hidden: false,
     name: 'charts',
     meta: {
       title: 'charts',
+      roles: ['super_admin', 'common_admin', 'common_admin_child'],
       icon: 'chart'
     },
     children: [
-      { path: 'keyboard', component: _import('charts/keyboard'), name: 'keyboardChart', meta: { title: 'keyboardChart', noCache: true }},
-      { path: 'line', component: _import('charts/line'), name: 'lineChart', meta: { title: 'lineChart', noCache: true }},
-      { path: 'mixchart', component: _import('charts/mixChart'), name: 'mixChart', meta: { title: 'mixChart', noCache: true }}
+      { path: 'keyboard', component: _import('charts/keyboard'), name: 'keyboardChart', meta: { title: 'keyboardChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
+      { path: 'line', component: _import('charts/line'), name: 'lineChart', meta: { title: 'lineChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
+      { path: 'mixchart', component: _import('charts/mixChart'), name: 'mixChart', meta: { title: 'mixChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
     ]
   },
 
