@@ -148,6 +148,7 @@ export default {
     browser_name: '浏览器',
     pv: 'Pv',
     uv: 'Uv',
+    rate_pv: 'pv/uv',
     stay_seconds: '总停留时间（s）',
     jump_out_count: '跳出数',
     drop_out_count: '退出数',
@@ -175,6 +176,9 @@ export default {
     operate: '操作系统',
     devide: '设备',
     base_info: '基础信息',
+    trend: '趋势',
+    trend_info: '趋势详细',
+    all_trend: '全部趋势',
 
     site_js_info: 'Js 代码',
     payment_end_time: '付费到期时间',

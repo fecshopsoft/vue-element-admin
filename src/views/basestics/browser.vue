@@ -34,7 +34,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
     </div>
 
-    <el-table :default-sort = "defaultSort"  @sort-change="sortChange" stripe :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+    <el-table :default-sort = "{ prop: listQuery.sort, order: listQuery.sort_dir }"  @sort-change="sortChange" stripe :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%"  @selection-change="changeFun" class="editonfb">
       <!--
       <el-table-column align="left" :label="$t('table.id')" width="145">
@@ -118,8 +118,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column fixed="right" align="center" :label="$t('table.actions')" width="100" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" align="center" :label="$t('table.actions')" width="160" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdate2(scope.row)">{{$t('table.trend')}}</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.editinfo')}}</el-button>
         </template>
       </el-table-column>
@@ -214,51 +215,28 @@
           </el-form>
 
         </el-tab-pane>
-        <el-tab-pane :label="$t('table.devide')" name="second">
+        <el-tab-pane :label="$t('table.devide')" name="chart_12">
           <div class='chart-container'>
-            <piechart 
-              :className="chart2.className" 
-              :id="chart2.id"
-              :width="chart2.width"
-              :height="chart2.height"
-              :legenddata="chart2.legenddata"
-              :seriesdata="chart2.seriesdata"
+            <piechart className="chart_12" id="chart_12" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_devide.legenddata"
+              :seriesdata="chart_devide.seriesdata"
             ></piechart>
           </div>
         </el-tab-pane>
-        <el-tab-pane :label="$t('table.operate')" name="third">
+        <el-tab-pane :label="$t('table.operate')" name="chart_13">
           <div class='chart-container'>
-            <piechart 
-              :className="chart3.className" 
-              :id="chart3.id"
-              :width="chart3.width"
-              :height="chart3.height"
-              :legenddata="chart3.legenddata"
-              :seriesdata="chart3.seriesdata"
+            <piechart className="chart_13" id="chart_13" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_operate.legenddata"
+              :seriesdata="chart_operate.seriesdata"
             ></piechart>
           </div>
         </el-tab-pane>
-        <el-tab-pane :label="$t('table.couontry_code')" name="fourth">
+        <el-tab-pane :label="$t('table.couontry_code')" name="chart_14">
           <div class='chart-container'>
-            <piechart 
-              :className="chart4.className" 
-              :id="chart4.id"
-              :width="chart4.width"
-              :height="chart4.height"
-              :legenddata="chart4.legenddata"
-              :seriesdata="chart4.seriesdata"
+            <piechart className="chart_14" id="chart_14" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_couontry_code.legenddata"
+              :seriesdata="chart_couontry_code.seriesdata"
             ></piechart>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="折线" name="fivth">
-          <div class='chart-container'>
-            <linechart 
-              :className="chart5.className" 
-              :id="chart5.id"
-              :width="chart5.width"
-              :height="chart5.height"
-              :lineData="chart5.lineData"
-            ></linechart>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -267,72 +245,189 @@
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog top="1vh" :title="$t('table.trend_info')" :visible.sync="dialogFormVisible2">
+      <el-tabs v-model="activeTabName2" @tab-click="handleClick2">
+        <el-tab-pane :label="$t('table.all_trend')" name="first2">
+          <div class='chart-container'>
+            <linechart className="chart_21" id="chart_21" :width="chartWidth" :height="chartHeight"
+              :lineData="temp.trendLang"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.pv')" name="chart_22">
+          <div class='chart-container'>
+            <linechart className="chart_22" id="chart_22" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('pv')) ? {'pv': temp.trend.pv} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.uv')" name="chart_23">
+          <div class='chart-container'>
+            <linechart className="chart_23" id="chart_23" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('uv')) ? {'uv': temp.trend.uv} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.stay_seconds')" name="chart_24">
+          <div class='chart-container'>
+            <linechart className="chart_24" id="chart_24" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('stay_seconds')) ? {'stay_seconds': temp.trend.stay_seconds} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.stay_seconds_rate')" name="chart_25">
+          <div class='chart-container'>
+            <linechart className="chart_25" id="chart_25" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('stay_seconds_rate')) ? {'stay_seconds_rate': temp.trend.stay_seconds_rate} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        
+        <el-tab-pane :label="$t('table.is_return_rate')" name="chart_26">
+          <div class='chart-container'>
+            <lineratechart className="chart_26" id="chart_26" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('is_return_rate')) ? {'is_return_rate': temp.trend.is_return_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.pv_rate')" name="chart_27">
+          <div class='chart-container'>
+            <linechart className="chart_27" id="chart_27" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('pv_rate')) ? {'pv_rate': temp.trend.pv_rate} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.jump_out_count')" name="chart_28">
+          <div class='chart-container'>
+            <linechart className="chart_28" id="chart_28" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('jump_out_count')) ? {'jump_out_count': temp.trend.jump_out_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.drop_out_count')" name="chart_29">
+          <div class='chart-container'>
+            <linechart className="chart_29" id="chart_29" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('drop_out_count')) ? {'drop_out_count': temp.trend.drop_out_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.jump_out_rate')" name="chart_210">
+          <div class='chart-container'>
+            <lineratechart className="chart_210" id="chart_210" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('jump_out_rate')) ? {'jump_out_rate': temp.trend.jump_out_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.drop_out_rate')" name="chart_211">
+          <div class='chart-container'>
+            <lineratechart className="chart_211" id="chart_211" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('drop_out_rate')) ? {'drop_out_rate': temp.trend.drop_out_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.cart_count')" name="chart_212">
+          <div class='chart-container'>
+            <linechart className="chart_212" id="chart_212" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('cart_count')) ? {'cart_count': temp.trend.cart_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.order_count')" name="chart_213">
+          <div class='chart-container'>
+            <linechart className="chart_213" id="chart_213" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_count')) ? {'order_count': temp.trend.order_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.success_order_count')" name="chart_214">
+          <div class='chart-container'>
+            <linechart className="chart_214" id="chart_214" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_count')) ? {'success_order_count': temp.trend.success_order_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.success_order_no_count')" name="chart_215">
+          <div class='chart-container'>
+            <linechart className="chart_215" id="chart_215" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_no_count')) ? {'success_order_no_count': temp.trend.success_order_no_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.is_return')" name="chart_216">
+          <div class='chart-container'>
+            <linechart className="chart_216" id="chart_216" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('is_return')) ? {'is_return': temp.trend.is_return} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.sku_sale_rate')" name="chart_218">
+          <div class='chart-container'>
+            <lineratechart className="chart_218" id="chart_218" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('sku_sale_rate')) ? {'sku_sale_rate': temp.trend.sku_sale_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+        
+      </el-tabs>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // 从api包中导入用于ajax的函数
-import { fetchList } from '@/api/basestics/browser'
+import { fetchList, fetchTrendInfo } from '@/api/basestics/browser'
 import waves from '@/directive/waves' // 水波纹指令
 import Linechart from '@/components/Charts/line'
+import Lineratechart from '@/components/Charts/lineRate'
 import Piechart from '@/components/Charts/pie'
 // import { parseTime } from '@/utils' // 时间格式处理
 // import Tinymce from '@/components/Tinymce' // 富文本编辑框
-/*
-const sexOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
-  { key: 1, display_name: 'Man' },
-  { key: 2, display_name: 'Women' }
-]
-const statusOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
-  { key: 1, display_name: 'Enable' },
-  { key: 2, display_name: 'Disable' }
-]
-*/
 export default {
   name: 'marketGroupComplexTable',
-  components: { Linechart, Piechart },
+  components: { Linechart, Lineratechart, Piechart },
   // components: { Tinymce }, // 引入的组件
   directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
     waves // 点击按钮出现水波纹
   },
   data() {
     return {
-      chart2: {
-        className: 'chart_2',
-        id: 'chart_2',
-        width: '800px',
-        height: '450px',
+      chartWidth: '1000px',
+      chartHeight: '450px',
+      chart_devide: {
         legenddata: [],
         seriesdata: []
       },
-      chart3: {
-        className: 'chart_3',
-        id: 'chart_3',
-        width: '800px',
-        height: '450px',
+      chart_operate: {
         legenddata: [],
         seriesdata: []
       },
-      chart4: {
-        className: 'chart_4',
-        id: 'chart_4',
-        width: '800px',
-        height: '450px',
+      chart_couontry_code: {
         legenddata: [],
         seriesdata: []
       },
-      chart5: {
-        className: 'chart_5',
-        id: 'chart_5',
-        width: '1000px',
-        height: '450px',
-        lineData: {}
-      },
+
       tableKey: 0,
       list: null,
       multipleSelection: [],
       total: null,
       activeTabName: 'first',
+      activeTabName2: 'first2',
       listLoading: true,
       // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值
@@ -345,10 +440,9 @@ export default {
         // type: undefined,
         service_date_str_begin: undefined, // 搜索开始时间
         service_date_str_end: undefined, // 搜索结束时间
-        sort: 'id', // 排序的字段，默认为id升序排序
+        sort: 'service_date_str', // 排序的字段，默认为id升序排序
         sort_dir: 'descending' // 'ascending'
       },
-      defaultSort: { prop: 'service_date_str', order: 'descending' },
       ownNameOptions: {},
       siteIdOptions: {},
       createdCustomerOptions: {},
@@ -362,9 +456,12 @@ export default {
         id: undefined,
         name: '',
         own_id: '',
+        trend: '',
+        trendLang: '',
         created_customer_id: ''
       },
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
+      dialogFormVisible2: false,
       dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
       textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',
@@ -388,39 +485,11 @@ export default {
   // 因此 scope.row.created_at 的值将作为过滤器 parseTime(value,'{y}-{m}-{d}') 函数的value参数传入
   // 得到的结果，将作为 dateFilter(value) 函数的第一个参数value，传入
   filters: {
-    /* 废弃
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return sexValue[type]
-    },
-    */
     fixFloat2(value) {
       return parseFloat(value).toFixed(2)
     },
     rateFloat2(value) {
       return ((100 * value).toFixed(2)) + '%'
-    },
-    parseCreatedCustomer(value, createdCustomerOptions) {
-      for (var x in createdCustomerOptions) {
-        if (createdCustomerOptions[x]['key'] === value) {
-          return createdCustomerOptions[x]['display_name']
-        }
-      }
-      return value
-    },
-    dateFilter(value) {
-      if (value === '1970-01-01') {
-        return ''
-      } else {
-        return value
-      }
     }
   },
   created() {
@@ -428,6 +497,9 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
+      console.log(tab, event)
+    },
+    handleClick2(tab, event) {
       console.log(tab, event)
     },
     sortChange(columns, prop, sortDir) {
@@ -459,11 +531,6 @@ export default {
       this.listLoading = true
       console.log(this.listQuery)
       fetchList(this.listQuery).then(response => {
-        // :default-sort = "{prop: 'date', order: 'descending'}"
-        // this.listQuery.sort
-        // this.listQuery.sort_dir  // descending
-
-        // this.defaultSort = { prop: this.listQuery.sort, order: this.listQuery.sort_dir }
         this.list = response.data.items
         this.total = response.data.total
         this.ownNameOptions = response.data.ownNameOptions
@@ -471,7 +538,6 @@ export default {
         this.listQuery.website_id = response.data.chosen_website_id
         this.listQuery.own_id = response.data.chosen_own_id
         this.initComplete = true
-        // this.createdCustomerOptions = response.data.createdCustomerOps
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -511,47 +577,49 @@ export default {
     // 下面的sex ，在go语言中，如果从数据库取出来为null，那么在go里面会被初始化成0，但是在element中，需要改成undefined 来对应数据库的null
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      // if (!this.temp.request_method) {
-      // this.temp.request_method = undefined
-      // }
-      // if (!this.temp.group_id) {
-      // this.temp.group_id = undefined
-      // }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       var devideData = this.peiFormat(this.temp.devide)
-      this.chart2.legenddata = devideData[0]
-      this.chart2.seriesdata = devideData[1]
+
+      this.chart_devide.legenddata = devideData[0]
+      this.chart_devide.seriesdata = devideData[1]
       var operateData = this.peiFormat(this.temp.operate)
-      this.chart3.legenddata = operateData[0]
-      this.chart3.seriesdata = operateData[1]
+      this.chart_operate.legenddata = operateData[0]
+      this.chart_operate.seriesdata = operateData[1]
       var countryCodeData = this.peiFormat(this.temp.country_code)
-      this.chart4.legenddata = countryCodeData[0]
-      this.chart4.seriesdata = countryCodeData[1]
-      this.chart5.lineData = {
-        '最高气温': {
-          '2018-04-01': 22,
-          '2018-04-02': 12,
-          '2018-04-10': 2,
-          '2018-04-11': 2,
-          '2018-04-12': 22,
-          '2018-04-06': 8,
-          '2018-04-07': 22
-        },
-        '最低气温': {
-          '2018-04-01': 2,
-          '2018-04-02': 52,
-          '2018-04-04': 12,
-          '2018-04-05': 30,
-          '2018-04-06': 22,
-          '2018-04-07': 42,
-          '2018-04-08': 18,
-          '2018-04-09': 32
-        }
-      }
+      this.chart_couontry_code.legenddata = countryCodeData[0]
+      this.chart_couontry_code.seriesdata = countryCodeData[1]
       // this.$nextTick(() => {
       // this.$refs['dataForm'].clearValidate()
       // })
+    },
+    handleUpdate2(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      var self = this
+      var responseTrend = {}
+      var responseTrendLang = {}
+      var queryData = {
+        'browser_name': row.browser_name,
+        'service_date_str': row.service_date_str,
+        'website_id': this.listQuery.website_id
+      }
+      fetchTrendInfo(queryData).then(response => {
+        for (var x in response.data.trend) {
+          var y = self.$t('table.' + x)
+          responseTrendLang[y] = response.data.trend[x]
+        }
+        responseTrend = response.data.trend
+        this.dialogStatus = 'update'
+        this.dialogFormVisible2 = true
+        this.temp.trend = responseTrend
+        this.temp.trendLang = responseTrendLang
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取追踪信息失败',
+          type: 'error'
+        })
+      })
     },
     peiFormat(data) {
       var legenddata = []
@@ -566,7 +634,6 @@ export default {
   }
 }
 </script>
-
 
 <style rel="stylesheet/scss" lang="scss">
 

@@ -79,23 +79,23 @@ export default {
     this.chart = null
   },
   methods: {
+    rateFloat2(value) {
+      return (100 * value).toFixed(2)
+    },
     initChart() {
       var lineData = this.lineData
       var legendData = []
-      var legendDataSelected = {}
       var xAxisDataObj = {}
       var xAxisDataArr = []
       var info
       var name
       // 首先循环，得到所有的x轴的值，写入对象xAxisDataObj
-      var maxLeg = 0
       for (name in lineData) {
         info = lineData[name]
         for (var x in info) {
           if (!xAxisDataObj.hasOwnProperty(x)) {
             xAxisDataObj[x] = x
           }
-          maxLeg++
         }
       }
       // 将 xAxisDataObj 输出为数组 xAxisDataArr
@@ -108,11 +108,6 @@ export default {
       var seriesData = []
       for (name in lineData) {
         legendData.push(name)
-        if (maxLeg > 2) {
-          legendDataSelected[name] = false
-        } else {
-          legendDataSelected[name] = true
-        }
         info = lineData[name]
         var xVal = []
         for (var xx in xAxisDataArr) {
@@ -122,7 +117,8 @@ export default {
           if (!info.hasOwnProperty(xData)) {
             xVal.push(0)
           } else {
-            xVal.push(info[xData])
+            var lk = this.rateFloat2(info[xData])
+            xVal.push(lk)
           }
         }
         // 得到维度对应的y值
@@ -157,8 +153,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: legendData,
-          selected: legendDataSelected
+          data: legendData
         },
         toolbox: {
           show: false,
@@ -181,7 +176,7 @@ export default {
         yAxis: {
           type: 'value',
           axisLabel: {
-            formatter: '{value}'
+            formatter: '{value} %'
           }
         },
         series: seriesData

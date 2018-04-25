@@ -8,10 +8,11 @@ export function fetchList(query) {
   })
 }
 
-export function fetchOne(data) {
+export function fetchTrendInfo(query) {
   return request({
-    url: '/v1/whole/browser/fetchone',
+    url: '/v1/whole/browser/fetchtrendinfo',
     method: 'get',
-    data
+    async: false,
+    params: query
   })
 }

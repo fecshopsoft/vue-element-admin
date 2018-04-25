@@ -149,6 +149,7 @@ export default {
     browser_name: 'Browser Name',
     pv: 'Pv',
     uv: 'Uv',
+    rate_pv: 'pv/uv',
     stay_seconds: 'Stay Second（s）',
     jump_out_count: 'Jump Out Count',
     drop_out_count: 'Drop Out Count',
@@ -176,6 +177,9 @@ export default {
     operate: 'Operate System',
     devide: 'Devide',
     base_info: 'Base Info',
+    trend: 'Trend',
+    trend_info: 'Trend Info',
+    all_trend: 'All Trend',
 
     site_js_info: 'Js Code',
     payment_end_time: 'Pay End Day',
