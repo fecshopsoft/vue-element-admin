@@ -95,8 +95,8 @@ export default {
           if (!xAxisDataObj.hasOwnProperty(x)) {
             xAxisDataObj[x] = x
           }
-          maxLeg++
         }
+        maxLeg++
       }
       // 将 xAxisDataObj 输出为数组 xAxisDataArr
       for (var y in xAxisDataObj) {

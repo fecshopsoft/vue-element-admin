@@ -14,7 +14,6 @@
         </el-option>
       </el-select>
       
-
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.service_date_str_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.service_date_str_begin')">
       </el-date-picker>
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.service_date_str_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.service_date_str_end')">
@@ -636,11 +635,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-
 .editonfb thead tr th , .editonfb tbody tr td span{
   font-size:11px;
 }
-
 .chart-container{
   position: relative;
   padding: 20px;
