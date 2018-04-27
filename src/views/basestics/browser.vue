@@ -600,7 +600,7 @@ export default {
       var queryData = {
         'browser_name': row.browser_name,
         'service_date_str': row.service_date_str,
-        'website_id': this.listQuery.website_id
+        'website_id': row.website_id
       }
       fetchTrendInfo(queryData).then(response => {
         for (var x in response.data.trend) {
