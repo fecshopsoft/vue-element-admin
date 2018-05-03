@@ -33,7 +33,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
     </div>
 
-    <el-table :default-sort = "{ prop: listQuery.sort, order: listQuery.sort_dir }"  @sort-change="sortChange" stripe :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+    <el-table height="650" :default-sort = "{ prop: listQuery.sort, order: listQuery.sort_dir }"  @sort-change="sortChange" stripe :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%"  @selection-change="changeFun" class="editonfb">
       <!--
       <el-table-column align="left" :label="$t('table.id')" width="145">
@@ -99,18 +99,42 @@
         </template>
       </el-table-column>
 
-      <el-table-column sortable="custom" prop="success_order_count" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.success_order_count')">
+      <el-table-column sortable="custom" prop="success_order_count" show-overflow-tooltip min-width="150px" align="left" :label="$t('table.success_order_count')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.success_order_count}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.success_order_no_count')">
+      <el-table-column sortable="custom" prop="order_no_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.order_no_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_no_count}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="150px" align="left" :label="$t('table.success_order_no_count')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.success_order_no_count}}</span>
         </template>
       </el-table-column>
-      
+
+      <el-table-column sortable="custom" prop="order_payment_rate" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.order_payment_rate')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_payment_rate | rateFloat2() }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="order_amount" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.order_amount')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_amount | fixFloat2() }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="success_order_amount" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.success_order_amount')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.success_order_amount | fixFloat2() }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column sortable="custom" prop="sku_sale_rate" show-overflow-tooltip min-width="90px" align="left" :label="$t('table.sku_sale_rate')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.sku_sale_rate | rateFloat2()}}</span>
@@ -163,6 +187,10 @@
               <el-input :value="temp.pv_rate | fixFloat2"></el-input>
             </el-form-item>
 
+            <el-form-item :label="$t('table.ip_count')" >
+              <el-input v-model="temp.ip_count"></el-input>
+            </el-form-item>
+
             <el-form-item :label="$t('table.jump_out_count')" >
               <el-input v-model="temp.jump_out_count"></el-input>
             </el-form-item>
@@ -191,8 +219,24 @@
               <el-input v-model="temp.success_order_count"></el-input>
             </el-form-item>
 
+            <el-form-item :label="$t('table.order_no_count')" >
+              <el-input v-model="temp.order_no_count"></el-input>
+            </el-form-item>
+
             <el-form-item :label="$t('table.success_order_no_count')" >
               <el-input v-model="temp.success_order_no_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.order_payment_rate')" >
+              <el-input :value="temp.order_payment_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.order_amount')" >
+              <el-input  :value="temp.order_amount | fixFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.success_order_amount')" >
+              <el-input  :value="temp.success_order_amount | fixFloat2"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('table.is_return')" >
@@ -238,6 +282,42 @@
             ></piechart>
           </div>
         </el-tab-pane>
+        <el-tab-pane :label="$t('table.fec_app')" name="chart_15">
+          <div class='chart-container'>
+            <piechart className="chart_15" id="chart_15" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_fec_app.legenddata"
+              :seriesdata="chart_fec_app.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.resolution')" name="chart_16">
+          <div class='chart-container'>
+            <piechart className="chart_16" id="chart_16" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_resolution.legenddata"
+              :seriesdata="chart_resolution.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.color_depth')" name="chart_17">
+          <div class='chart-container'>
+            <piechart className="chart_17" id="chart_17" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_color_depth.legenddata"
+              :seriesdata="chart_color_depth.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.language')" name="chart_18">
+          <div class='chart-container'>
+            <piechart className="chart_18" id="chart_18" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_language.legenddata"
+              :seriesdata="chart_language.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+
       </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{$t('table.cancel')}}</el-button>
@@ -268,6 +348,21 @@
             ></linechart>
           </div>
         </el-tab-pane>
+        
+        <el-tab-pane :label="$t('table.pv_rate')" name="chart_23_1">
+          <div class='chart-container'>
+            <linechart className="chart_23_1" id="chart_23_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('pv_rate')) ? {'pv_rate': temp.trend.pv_rate} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.ip_count')" name="chart_23_2">
+          <div class='chart-container'>
+            <linechart className="chart_23_2" id="chart_23_2" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('ip_count')) ? {'ip_count': temp.trend.ip_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
         <el-tab-pane :label="$t('table.stay_seconds')" name="chart_24">
           <div class='chart-container'>
             <linechart className="chart_24" id="chart_24" :width="chartWidth" :height="chartHeight"
@@ -282,20 +377,20 @@
             ></linechart>
           </div>
         </el-tab-pane>
-        
+
+        <el-tab-pane :label="$t('table.is_return')" name="chart_26_1">
+          <div class='chart-container'>
+            <linechart className="chart_26_1" id="chart_26_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('is_return')) ? {'is_return': temp.trend.is_return} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane :label="$t('table.is_return_rate')" name="chart_26">
           <div class='chart-container'>
             <lineratechart className="chart_26" id="chart_26" :width="chartWidth" :height="chartHeight"
               :lineData="( temp.trend && temp.trend.hasOwnProperty('is_return_rate')) ? {'is_return_rate': temp.trend.is_return_rate} : null"
             ></lineratechart>
-          </div>
-        </el-tab-pane>
-
-        <el-tab-pane :label="$t('table.pv_rate')" name="chart_27">
-          <div class='chart-container'>
-            <linechart className="chart_27" id="chart_27" :width="chartWidth" :height="chartHeight"
-              :lineData="( temp.trend && temp.trend.hasOwnProperty('pv_rate')) ? {'pv_rate': temp.trend.pv_rate} : null"
-            ></linechart>
           </div>
         </el-tab-pane>
 
@@ -355,6 +450,14 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane :label="$t('table.order_no_count')" name="chart_215_1">
+          <div class='chart-container'>
+            <linechart className="chart_215_1" id="chart_215_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_no_count')) ? {'order_no_count': temp.trend.order_no_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane :label="$t('table.success_order_no_count')" name="chart_215">
           <div class='chart-container'>
             <linechart className="chart_215" id="chart_215" :width="chartWidth" :height="chartHeight"
@@ -363,10 +466,26 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane :label="$t('table.is_return')" name="chart_216">
+        <el-tab-pane :label="$t('table.order_payment_rate')" name="chart_214_1">
           <div class='chart-container'>
-            <linechart className="chart_216" id="chart_216" :width="chartWidth" :height="chartHeight"
-              :lineData="( temp.trend && temp.trend.hasOwnProperty('is_return')) ? {'is_return': temp.trend.is_return} : null"
+            <lineratechart className="chart_214_1" id="chart_214_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_payment_rate')) ? {'order_payment_rate': temp.trend.order_payment_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
+         <el-tab-pane :label="$t('table.order_amount')" name="chart_215_2">
+          <div class='chart-container'>
+            <linechart className="chart_215_2" id="chart_215_2" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_amount')) ? {'order_amount': temp.trend.order_amount} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.success_order_amount')" name="chart_215_3">
+          <div class='chart-container'>
+            <linechart className="chart_215_3" id="chart_215_3" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_amount')) ? {'success_order_amount': temp.trend.success_order_amount} : null"
             ></linechart>
           </div>
         </el-tab-pane>
@@ -416,7 +535,24 @@ export default {
         legenddata: [],
         seriesdata: []
       },
+      chart_fec_app: {
+        legenddata: [],
+        seriesdata: []
+      },
       chart_couontry_code: {
+        legenddata: [],
+        seriesdata: []
+      },
+
+      chart_resolution: {
+        legenddata: [],
+        seriesdata: []
+      },
+      chart_color_depth: {
+        legenddata: [],
+        seriesdata: []
+      },
+      chart_language: {
         legenddata: [],
         seriesdata: []
       },
@@ -588,6 +724,19 @@ export default {
       var countryCodeData = this.peiFormat(this.temp.country_code)
       this.chart_couontry_code.legenddata = countryCodeData[0]
       this.chart_couontry_code.seriesdata = countryCodeData[1]
+      var fecAppData = this.peiFormat(this.temp.fec_app)
+      this.chart_fec_app.legenddata = fecAppData[0]
+      this.chart_fec_app.seriesdata = fecAppData[1]
+
+      var resolutionData = this.peiFormat(this.temp.resolution)
+      this.chart_resolution.legenddata = resolutionData[0]
+      this.chart_resolution.seriesdata = resolutionData[1]
+      var colorDepthData = this.peiFormat(this.temp.color_depth)
+      this.chart_color_depth.legenddata = colorDepthData[0]
+      this.chart_color_depth.seriesdata = colorDepthData[1]
+      var languageData = this.peiFormat(this.temp.language)
+      this.chart_language.legenddata = languageData[0]
+      this.chart_language.seriesdata = languageData[1]
       // this.$nextTick(() => {
       // this.$refs['dataForm'].clearValidate()
       // })

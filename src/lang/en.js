@@ -145,7 +145,7 @@ export default {
     dynamicTips2: 'Not fixed header, sorted by click order',
     site_name: 'Site Name',
     payment: 'Pay',
-
+    first_referrer_domain: 'Refer Domain',
     browser_name: 'Browser Name',
     pv: 'Pv',
     uv: 'Uv',
@@ -191,6 +191,8 @@ export default {
     category_count: 'Category Page Pv',
     product_count: 'Product Page Pv',
     search_count: 'Search Page Pv',
+    fec_app: 'Fec App',
+    order_payment_rate: 'Order Pay Reate',
 
     site_js_info: 'Js Code',
     payment_end_time: 'Pay End Day',

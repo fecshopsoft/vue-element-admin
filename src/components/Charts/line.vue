@@ -79,6 +79,9 @@ export default {
     this.chart = null
   },
   methods: {
+    rateFloat2(value) {
+      return (value).toFixed(2)
+    },
     initChart() {
       var lineData = this.lineData
       var legendData = []
@@ -122,7 +125,8 @@ export default {
           if (!info.hasOwnProperty(xData)) {
             xVal.push(0)
           } else {
-            xVal.push(info[xData])
+            var lk = this.rateFloat2(info[xData])
+            xVal.push(lk)
           }
         }
         // 得到维度对应的y值

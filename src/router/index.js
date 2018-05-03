@@ -130,7 +130,6 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'basestics/initdata', component: _import('basestics/initdata'), name: 'basestics-initdata', meta: { title: 'basestics_initdata', icon: 'documentation', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/allsite', component: _import('basestics/allsite'), name: 'basestics-allsite', meta: { title: 'basestics_allsite', icon: 'component', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/site', component: _import('basestics/site'), name: 'basestics-site', meta: { title: 'basestics_site', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/refer', component: _import('basestics/refer'), name: 'basestics-refer', meta: { title: 'basestics_refer', icon: 'tab', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/sku', component: _import('basestics/sku'), name: 'basestics-sku', meta: { title: 'basestics_sku', icon: 'star', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},

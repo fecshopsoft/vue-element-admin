@@ -60,7 +60,11 @@
           <span class="link-type">{{scope.row.uv}}</span>
         </template>
       </el-table-column>
-      
+      <el-table-column sortable="custom" prop="ip_count" show-overflow-tooltip min-width="80px" align="left" :label="$t('table.ip_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.ip_count}}</span>
+        </template>
+      </el-table-column>
       <el-table-column sortable="custom" prop="stay_seconds_rate" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.stay_seconds_rate')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.stay_seconds_rate | fixFloat2()}}</span>  
@@ -103,12 +107,36 @@
         </template>
       </el-table-column>
 
-      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.success_order_no_count')">
+      <el-table-column sortable="custom" prop="order_no_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.order_no_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_no_count}}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column sortable="custom" prop="success_order_no_count" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.success_order_no_count')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.success_order_no_count}}</span>
         </template>
       </el-table-column>
-      
+
+      <el-table-column sortable="custom" prop="order_payment_rate" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.order_payment_rate')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_payment_rate | rateFloat2() }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="order_amount" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.order_amount')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.order_amount | fixFloat2() }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="success_order_amount" show-overflow-tooltip min-width="130px" align="left" :label="$t('table.success_order_amount')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.success_order_amount | fixFloat2() }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column sortable="custom" prop="sku_sale_rate" show-overflow-tooltip min-width="90px" align="left" :label="$t('table.sku_sale_rate')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.sku_sale_rate | rateFloat2()}}</span>
@@ -133,8 +161,8 @@
         <el-tab-pane :label="$t('table.base_info')" name="first">
           
           <el-form  ref="dataForm1" :model="temp" label-position="left" label-width="150px" style='width: 800px; margin-left:50px; margin-top:10px'>
-            <el-form-item :label="$t('table.browser_name')" >
-              <el-input v-model="temp.browser_name"></el-input>
+            <el-form-item :label="$t('table.website_id')" >
+              <el-input :value="temp.website_id | parseWebsiteName(siteIdOptions)"></el-input>
             </el-form-item>
             
             <el-form-item :label="$t('table.service_date_str')" >
@@ -167,14 +195,6 @@
 
             <el-form-item :label="$t('table.register_email_count')" >
               <el-input v-model="temp.register_email_count"></el-input>
-            </el-form-item>
-
-            <el-form-item :label="$t('table.order_amount')" >
-              <el-input  :value="temp.order_amount | fixFloat2"></el-input>
-            </el-form-item>
-
-            <el-form-item :label="$t('table.success_order_amount')" >
-              <el-input  :value="temp.success_order_amount | fixFloat2"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('table.category_count')" >
@@ -221,8 +241,24 @@
               <el-input v-model="temp.success_order_count"></el-input>
             </el-form-item>
 
+            <el-form-item :label="$t('table.order_no_count')" >
+              <el-input v-model="temp.order_no_count"></el-input>
+            </el-form-item>
+
             <el-form-item :label="$t('table.success_order_no_count')" >
               <el-input v-model="temp.success_order_no_count"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.order_payment_rate')" >
+              <el-input  :value="temp.order_payment_rate | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.order_amount')" >
+              <el-input  :value="temp.order_amount | fixFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.success_order_amount')" >
+              <el-input  :value="temp.success_order_amount | fixFloat2"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('table.is_return')" >
@@ -257,6 +293,14 @@
             <piechart className="chart_13" id="chart_13" :width="chartWidth" :height="chartHeight"
               :legenddata="chart_operate.legenddata"
               :seriesdata="chart_operate.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.fec_app')" name="chart_13_1">
+          <div class='chart-container'>
+            <piechart className="chart_13_1" id="chart_13_1" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_fec_app.legenddata"
+              :seriesdata="chart_fec_app.seriesdata"
             ></piechart>
           </div>
         </el-tab-pane>
@@ -332,6 +376,13 @@
           <div class='chart-container'>
             <linechart className="chart_23" id="chart_23" :width="chartWidth" :height="chartHeight"
               :lineData="( temp.trend && temp.trend.hasOwnProperty('uv')) ? {'uv': temp.trend.uv} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.ip_count')" name="chart_23_1">
+          <div class='chart-container'>
+            <linechart className="chart_23_1" id="chart_23_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('ip_count')) ? {'ip_count': temp.trend.ip_count} : null"
             ></linechart>
           </div>
         </el-tab-pane>
@@ -422,10 +473,42 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane :label="$t('table.order_no_count')" name="chart_215_1">
+          <div class='chart-container'>
+            <linechart className="chart_215_1" id="chart_215_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_no_count')) ? {'order_no_count': temp.trend.order_no_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane :label="$t('table.success_order_no_count')" name="chart_215">
           <div class='chart-container'>
             <linechart className="chart_215" id="chart_215" :width="chartWidth" :height="chartHeight"
               :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_no_count')) ? {'success_order_no_count': temp.trend.success_order_no_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.order_payment_rate')" name="chart_214_1">
+          <div class='chart-container'>
+            <lineratechart className="chart_214_1" id="chart_214_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_payment_rate')) ? {'order_payment_rate': temp.trend.order_payment_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.order_amount')" name="chart_215_2">
+          <div class='chart-container'>
+            <linechart className="chart_215_2" id="chart_215_2" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('order_amount')) ? {'order_amount': temp.trend.order_amount} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.success_order_amount')" name="chart_215_3">
+          <div class='chart-container'>
+            <linechart className="chart_215_3" id="chart_215_3" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_amount')) ? {'success_order_amount': temp.trend.success_order_amount} : null"
             ></linechart>
           </div>
         </el-tab-pane>
@@ -480,6 +563,10 @@ export default {
         seriesdata: []
       },
       chart_operate: {
+        legenddata: [],
+        seriesdata: []
+      },
+      chart_fec_app: {
         legenddata: [],
         seriesdata: []
       },
@@ -681,7 +768,9 @@ export default {
       var browserNameData = this.peiFormat(this.temp.browser_name)
       this.chart_browser_name.legenddata = browserNameData[0]
       this.chart_browser_name.seriesdata = browserNameData[1]
-
+      var fecAppData = this.peiFormat(this.temp.fec_app)
+      this.chart_fec_app.legenddata = fecAppData[0]
+      this.chart_fec_app.seriesdata = fecAppData[1]
       var resolutionData = this.peiFormat(this.temp.resolution)
       this.chart_resolution.legenddata = resolutionData[0]
       this.chart_resolution.seriesdata = resolutionData[1]
