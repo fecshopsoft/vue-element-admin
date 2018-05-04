@@ -31,6 +31,17 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
+Vue.prototype.getSkuImg = function(imgApiUrl, website_id, sku) {
+  if (img_api_url && website_id && sku) {
+    if (imgApiUrl.hasOwnProperty(website_id)) {
+      var img_api_url = imgApiUrl[website_id]
+      // alert(img_api_url + "###" + website_id)
+      // alert(img_api_url + "##" + sku)
+      return '://' + img_api_url + '?sku=' + sku
+    }
+  }
+}
+
 new Vue({
   el: '#app',
   router,

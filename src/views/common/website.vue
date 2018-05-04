@@ -122,6 +122,12 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item :label="$t('table.sku_image_api_url')" prop="sku_image_api_url">
+          <el-input placeholder="" v-model="temp.sku_image_api_url">
+            <template slot="prepend">Http://</template>
+          </el-input>
+        </el-form-item>
+
         <el-form-item :label="$t('table.trace_js_url')" prop="trace_js_url">
           <el-input placeholder="系统生成，不需要填写" v-model="temp.trace_js_url">
             <template slot="prepend">Http://</template>
