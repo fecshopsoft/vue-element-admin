@@ -47,7 +47,11 @@
           <span class="link-type">{{scope.row.search_text}}</span>
         </template>
       </el-table-column>
-
+       <el-table-column sortable="custom" prop="search_qty" show-overflow-tooltip  width="140px" align="left" :label="$t('table.search_qty')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_qty}}</span>
+        </template>
+      </el-table-column>
       <el-table-column sortable="custom" prop="service_date_str" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.service_date_str')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.service_date_str}}</span>
@@ -88,11 +92,47 @@
         </template>
       </el-table-column>
 
-      <el-table-column fixed="right" align="center" :label="$t('table.actions')" width="80" class-name="small-padding fixed-width">
+      <el-table-column sortable="custom" prop="search_login_email" show-overflow-tooltip min-width="150px" align="left" :label="$t('table.search_login_email')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_login_email}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_sku_click" show-overflow-tooltip min-width="160px" align="left" :label="$t('table.search_sku_click')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sku_click}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_sku_cart" show-overflow-tooltip min-width="180px" align="left" :label="$t('table.search_sku_cart')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sku_cart}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_sku_order" show-overflow-tooltip min-width="160px" align="left" :label="$t('table.search_sku_order')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sku_order}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_sku_order_success" show-overflow-tooltip min-width="180px" align="left" :label="$t('table.search_sku_order_success')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sku_order_success}}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column sortable="custom" prop="search_sku_click_rate" show-overflow-tooltip min-width="160px" align="right" :label="$t('table.search_sku_click_rate')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sku_click_rate | rateFloat2()}}</span>  
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_sale_rate" show-overflow-tooltip min-width="160px" align="right" :label="$t('table.search_sale_rate')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_sale_rate | rateFloat2()}}</span>  
+        </template>
+      </el-table-column>
+
+      <el-table-column fixed="right" align="center" :label="$t('table.actions')" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate2(scope.row)">{{$t('table.trend')}}</el-button>
-          <br>
-          <el-button style="margin:10px 0 0 -2px;" type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.editinfo')}}</el-button>
+          <el-button  type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.editinfo')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,6 +150,10 @@
               <el-input v-model="temp.search_text"></el-input>
             </el-form-item>
             
+            <el-form-item :label="$t('table.search_qty')" >
+              <el-input v-model="temp.search_qty"></el-input>
+            </el-form-item>
+
             <el-form-item :label="$t('table.service_date_str')" >
               <el-input v-model="temp.service_date_str"></el-input>
             </el-form-item>
@@ -165,6 +209,35 @@
             <el-form-item :label="$t('table.first_page')" >
               <el-input v-model="temp.first_page"></el-input>
             </el-form-item>
+
+            <el-form-item :label="$t('table.search_login_email')" >
+              <el-input v-model="temp.search_login_email"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sku_click')" >
+              <el-input v-model="temp.search_sku_click"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sku_cart')" >
+              <el-input v-model="temp.search_sku_cart"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sku_order')" >
+              <el-input v-model="temp.search_sku_order"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sku_order_success')" >
+              <el-input v-model="temp.search_sku_order_success"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sku_click_rate')" >
+              <el-input :value="temp.search_sku_click_rate  | rateFloat2"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.search_sale_rate')" >
+              <el-input :value="temp.search_sale_rate  | rateFloat2"></el-input>
+            </el-form-item>
+
           </el-form>
         </el-tab-pane>
         <el-tab-pane :label="$t('table.devide')" name="chart_12">
@@ -343,6 +416,63 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane :label="$t('table.search_qty')" name="chart_32">
+          <div class='chart-container'>
+            <linechart className="chart_32" id="chart_32" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_qty')) ? {'search_qty': temp.trend.search_qty} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_login_email')" name="chart_33">
+          <div class='chart-container'>
+            <linechart className="chart_33" id="chart_33" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_login_email')) ? {'search_login_email': temp.trend.search_login_email} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sku_click')" name="chart_34">
+          <div class='chart-container'>
+            <linechart className="chart_34" id="chart_34" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sku_click')) ? {'search_sku_click': temp.trend.search_sku_click} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sku_cart')" name="chart_35">
+          <div class='chart-container'>
+            <linechart className="chart_35" id="chart_35" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sku_cart')) ? {'search_sku_cart': temp.trend.search_sku_cart} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sku_order')" name="chart_36">
+          <div class='chart-container'>
+            <linechart className="chart_36" id="chart_36" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sku_order')) ? {'search_sku_order': temp.trend.search_sku_order} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sku_order_success')" name="chart_37">
+          <div class='chart-container'>
+            <linechart className="chart_37" id="chart_37" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sku_order_success')) ? {'search_sku_order_success': temp.trend.search_sku_order_success} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sku_click_rate')" name="chart_38">
+          <div class='chart-container'>
+            <lineratechart className="chart_38" id="chart_38" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sku_click_rate')) ? {'search_sku_click_rate': temp.trend.search_sku_click_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_sale_rate')" name="chart_39">
+          <div class='chart-container'>
+            <lineratechart className="chart_39" id="chart_39" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_sale_rate')) ? {'search_sale_rate': temp.trend.search_sale_rate} : null"
+            ></lineratechart>
+          </div>
+        </el-tab-pane>
+
       </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible2 = false">{{$t('table.cancel')}}</el-button>
@@ -411,7 +541,7 @@ export default {
       multipleSelection: [],
       total: null,
       activeTabName: 'first',
-      activeTabName2: 'first2',
+      activeTabName2: 'chart_22',
       listLoading: true,
       // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值

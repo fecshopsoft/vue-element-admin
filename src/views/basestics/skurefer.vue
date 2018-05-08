@@ -591,7 +591,7 @@ export default {
       multipleSelection: [],
       total: null,
       activeTabName: 'first',
-      activeTabName2: 'first2',
+      activeTabName2: 'chart_22',
       listLoading: true,
       // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值
