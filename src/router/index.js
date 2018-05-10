@@ -129,8 +129,9 @@ export const asyncRouterMap = [
       roles: ['super_admin', 'common_admin', 'common_admin_child']
     },
     children: [
-      { path: 'basestics/initdata', component: _import('basestics/initdata'), name: 'basestics-initdata', meta: { title: 'basestics_initdata', icon: 'documentation', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
+      // { path: 'basestics/initdata', component: _import('basestics/initdata'), name: 'basestics-initdata', meta: { title: 'basestics_initdata', icon: 'documentation', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/site', component: _import('basestics/site'), name: 'basestics-site', meta: { title: 'basestics_site', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
+      { path: 'basestics/app', component: _import('basestics/app'), name: 'basestics-app', meta: { title: 'basestics_app', icon: 'dashboard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/refer', component: _import('basestics/refer'), name: 'basestics-refer', meta: { title: 'basestics_refer', icon: 'tab', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/sku', component: _import('basestics/sku'), name: 'basestics-sku', meta: { title: 'basestics_sku', icon: 'star', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
       { path: 'basestics/skurefer', component: _import('basestics/skurefer'), name: 'basestics-skurefer', meta: { title: 'basestics_skurefer', icon: 'clipboard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},

@@ -1,0 +1,162 @@
+<template>
+  <div class="app-container calendar-list-container">
+    <div class="top_form">
+      <el-select @change='handleChannel'  clearable class="filter-item" style="width: 240px" v-model="listQuery.channel" :placeholder="$t('table.channel')">
+        <el-option v-for="item in  listQuery.channelOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+
+      <el-select clearable class="filter-item" style="width: 240px" v-model="listQuery.channel_child" :placeholder="$t('table.channel_child')">
+        <el-option v-for="item in  listQuery.channelChildOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+
+      <el-input clearable  style="width: 200px;" class="filter-item" :placeholder="$t('table.campaign_info')" v-model="listQuery.campaign">
+      </el-input>
+
+      <el-select clearable class="filter-item" style="width: 240px" v-model="listQuery.design" :placeholder="$t('table.design_person')">
+        <el-option v-for="item in  listQuery.designOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+      <br><br>
+
+      <el-input clearable  style="width: 900px;" class="filter-item" :placeholder="$t('table.advertise_url_info')" v-model="listQuery.advertise_url">
+      </el-input>
+
+      <br><br>
+
+      <el-input clearable  style="width: 300px;" class="filter-item" :placeholder="$t('table.advertise_cost_info')" v-model="listQuery.advertise_cost">
+      </el-input>
+      <el-input clearable  style="width: 500px;" class="filter-item" :placeholder="$t('table.advertise_remark')" v-model="listQuery.remark">
+      </el-input>
+
+      <br><br>
+      
+      <el-button v-waves type="primary">{{$t('table.generate_advertise_url')}}</el-button>
+
+      <br><br>
+      <br><br>
+      <div class="message">
+        <div>
+          <fieldset id="fieldset_table_qbe">
+            <legend style="color:#f60">{{$t('table.advertise_warning') }}</legend>
+            <div class="tishi_info" style="color:#f60">
+              {{advertise_warning}}     
+            </div>
+          </fieldset>
+        </div>
+        <br>
+        <div>
+        
+          <fieldset id="fieldset_table_qbexx">
+            <legend style="color:#cc0000">{{$t('table.advertise_error')}}</legend>
+            <div class="tishi_info" style="color:#cc0000">
+              {{advertise_error}} 			
+            </div>
+          </fieldset>
+        </div>
+        <br>
+        <div>
+          <fieldset id="fieldset_table_qbe">
+            <legend style="color:green">{{$t('table.advertise_success') }}</legend>
+            <div class="tishi_info" style="color:green">
+              {{advertise_success}} 
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+</template>
+
+<script>
+// 从api包中导入用于ajax的函数
+import { fetchInit, generateAdvertieseUrl } from '@/api/advertise/generate'
+import waves from '@/directive/waves' // 水波纹指令
+import Linechart from '@/components/Charts/line'
+import Lineratechart from '@/components/Charts/lineRate'
+import Piechart from '@/components/Charts/pie'
+// import { parseTime } from '@/utils' // 时间格式处理
+// import Tinymce from '@/components/Tinymce' // 富文本编辑框
+export default {
+  name: 'marketGroupComplexTable',
+  components: { Linechart, Lineratechart, Piechart },
+  // components: { Tinymce }, // 引入的组件
+  directives: { // 自定义组件directives , 详细参看：http://blog.csdn.net/hant1991/article/details/74626002
+    waves // 点击按钮出现水波纹
+  },
+  data() {
+    return {
+      listQuery: { // 当前的查询参数值
+        
+        campaign: '', // 活动
+        design: '', // 美工
+        designOptions: {},
+        advertise_url: '',
+        advertise_cost: '',
+        remark: '',
+
+        channel: '',
+        channelOptions: {},
+        channel_child: '', // 子渠道
+        channelChildOptions: {},
+        is_create : '2',
+      },
+      advertise_success: '',
+      advertise_error: '',
+      advertise_warning: ''
+    }
+  },
+
+  created() {
+    this.getList('1')
+  },
+  methods: {
+    getList(isCreate) {
+      this.listLoading = true
+      console.log(this.listQuery)
+      this.listQuery.is_create = isCreate
+      fetchInit(this.listQuery).then(response => {
+        
+        this.listQuery.channel = response.data.channel
+        this.listQuery.channelOptions = response.data.channelOptions
+        this.listQuery.channel_child = '' // response.data.channel_child
+        this.listQuery.channelChildOptions = response.data.channelChildOptions
+        if (isCreate === '1') {
+          this.listQuery.designOptions = response.data.designOptions
+        }
+        this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '获取 Channel child 失败',
+          type: 'error'
+        })
+      })
+    },
+    handleChannel() {
+      this.getList('2')
+    },
+    generateAdvertieseUrl() {
+      this.listLoading = true
+      console.log(this.listQuery)
+      generateAdvertieseUrl(this.listQuery).then(response => {
+
+        this.listLoading = false
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '生成广告链接失败',
+          type: 'error'
+        })
+      })
+    }
+  }
+}
+</script>
+<style rel="stylesheet/scss" lang="scss">
+.message fieldset{
+  border:1px solid #ccc
+}
+</style>

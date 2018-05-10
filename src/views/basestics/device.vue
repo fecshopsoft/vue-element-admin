@@ -528,10 +528,6 @@ export default {
     return {
       chartWidth: '1000px',
       chartHeight: '450px',
-      chart_devide: {
-        legenddata: [],
-        seriesdata: []
-      },
       chart_operate: {
         legenddata: [],
         seriesdata: []
@@ -718,10 +714,6 @@ export default {
       this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      var devideData = this.peiFormat(this.temp.devide)
-
-      this.chart_devide.legenddata = devideData[0]
-      this.chart_devide.seriesdata = devideData[1]
       var operateData = this.peiFormat(this.temp.operate)
       this.chart_operate.legenddata = operateData[0]
       this.chart_operate.seriesdata = operateData[1]
