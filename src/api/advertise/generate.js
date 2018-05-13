@@ -8,7 +8,6 @@ export function fetchInit(query) {
   })
 }
 
-
 export function generateAdvertieseUrl(query) {
   return request({
     url: '/v1/whole/advertise/generateurl',

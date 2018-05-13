@@ -32,7 +32,7 @@
 
       <br><br>
       
-      <el-button v-waves type="primary">{{$t('table.generate_advertise_url')}}</el-button>
+      <el-button v-waves type="primary" @click="generateAdvertieseUrl"  >{{$t('table.generate_advertise_url')}}</el-button>
 
       <br><br>
       <br><br>
@@ -60,7 +60,25 @@
           <fieldset id="fieldset_table_qbe">
             <legend style="color:green">{{$t('table.advertise_success') }}</legend>
             <div class="tishi_info" style="color:green">
-              {{advertise_success}} 
+              <table class="el-table advertise_table">
+                <tbody>
+                  <tr><td>{{$t('table.success_info')}}</td><td>您已经成功生成了广告链接，点击下面的按钮复制，就可以了。</td></tr>
+                  <tr><td>{{$t('table.advertise_url')}}</td><td>{{advertise_success.advertise_url}}</td></tr>
+                  <tr><td>{{$t('table.click_to_copy')}}</td><td>   </td></tr>
+                  <tr><td>{{$t('table.created_at')}}</td><td>{{advertise_success.created_at}}</td></tr>
+                  <tr><td>{{$t('table.origin_url')}}</td><td>{{advertise_success.origin_url}}</td></tr>
+                  <tr><td>{{$t('table.fid')}}</td><td>{{advertise_success.fid}}</td></tr>
+                  <tr><td>{{$t('table.channel')}}</td><td>{{advertise_success.channel}}</td></tr>
+                  <tr><td>{{$t('table.channel_child')}}</td><td>{{advertise_success.channel_child}}</td></tr>
+                  <tr><td>{{$t('table.campaign')}}</td><td>{{advertise_success.campaign}}</td></tr>
+                  <tr><td>{{$t('table.design_person')}}</td><td>{{advertise_success.design_person}}</td></tr>
+                  <tr><td>{{$t('table.advertise_person')}}</td><td>{{advertise_success.advertise_person}}</td></tr>
+                  <tr><td>{{$t('table.advertise_market_group')}}</td><td>{{advertise_success.advertise_market_group}}</td></tr>
+                  
+                  <tr><td>{{$t('table.advertise_cost')}}</td><td>{{advertise_success.advertise_cost}}</td></tr>
+                  <tr><td>{{$t('table.advertise_remark')}}</td><td>{{advertise_success.advertise_remark}}</td></tr>
+                </tbody>
+              </table>
             </div>
           </fieldset>
         </div>
@@ -89,21 +107,19 @@ export default {
   data() {
     return {
       listQuery: { // 当前的查询参数值
-        
         campaign: '', // 活动
         design: '', // 美工
         designOptions: {},
         advertise_url: '',
         advertise_cost: '',
         remark: '',
-
         channel: '',
         channelOptions: {},
         channel_child: '', // 子渠道
         channelChildOptions: {},
-        is_create : '2',
+        is_create: '2'
       },
-      advertise_success: '',
+      advertise_success: {},
       advertise_error: '',
       advertise_warning: ''
     }
@@ -118,7 +134,6 @@ export default {
       console.log(this.listQuery)
       this.listQuery.is_create = isCreate
       fetchInit(this.listQuery).then(response => {
-        
         this.listQuery.channel = response.data.channel
         this.listQuery.channelOptions = response.data.channelOptions
         this.listQuery.channel_child = '' // response.data.channel_child
@@ -139,10 +154,13 @@ export default {
       this.getList('2')
     },
     generateAdvertieseUrl() {
+      var self = this
       this.listLoading = true
       console.log(this.listQuery)
       generateAdvertieseUrl(this.listQuery).then(response => {
-
+        self.advertise_success = response.data.success_info
+        self.advertise_warning = response.data.warning
+        self.advertise_error = response.data.error
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -158,5 +176,8 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .message fieldset{
   border:1px solid #ccc
+}
+.advertise_table tr td{
+  color:green
 }
 </style>
