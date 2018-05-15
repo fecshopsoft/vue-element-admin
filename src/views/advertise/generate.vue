@@ -59,13 +59,16 @@
         <div>
           <fieldset id="fieldset_table_qbe">
             <legend style="color:green">{{$t('table.advertise_success') }}</legend>
-            <div class="tishi_info" style="color:green">
+            <div  class="tishi_info" style="color:green">
               <table class="el-table advertise_table">
                 <tbody>
-                  <tr><td>{{$t('table.success_info')}}</td><td>您已经成功生成了广告链接，点击下面的按钮复制，就可以了。</td></tr>
+                  <tr><td>{{$t('table.success_info')}}</td><td><span v-if="isSuccess">您已经成功生成了广告链接，点击下面的按钮复制，就可以了。</span></td></tr>
                   <tr><td>{{$t('table.advertise_url')}}</td><td>{{advertise_success.advertise_url}}</td></tr>
-                  <tr><td>{{$t('table.click_to_copy')}}</td><td>   </td></tr>
-                  <tr><td>{{$t('table.created_at')}}</td><td>{{advertise_success.created_at}}</td></tr>
+                  <tr><td>{{$t('table.click_to_copy')}}</td><td>
+                    <input  type="text" id="success_form_input" readonly="readonly" v-model="advertise_url"/>
+                    <button ref="copy" data-clipboard-action="copy" data-clipboard-target="#success_form_input" @click="copyLink">复制</button>  
+                  </td></tr>
+                  <tr><td>{{$t('table.created_at')}}</td><td>{{advertise_success.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</td></tr>
                   <tr><td>{{$t('table.origin_url')}}</td><td>{{advertise_success.origin_url}}</td></tr>
                   <tr><td>{{$t('table.fid')}}</td><td>{{advertise_success.fid}}</td></tr>
                   <tr><td>{{$t('table.channel')}}</td><td>{{advertise_success.channel}}</td></tr>
@@ -121,14 +124,35 @@ export default {
       },
       advertise_success: {},
       advertise_error: '',
+      copyBtn: null,
+      isSuccess: false,
+      advertise_url: '',
       advertise_warning: ''
     }
   },
-
+  mounted() {
+    this.copyBtn = new this.Clipboard(this.$refs.copy)
+  },
   created() {
     this.getList('1')
   },
   methods: {
+    copyLink() {
+      var _this = this
+      var clipboard = _this.copyBtn
+      clipboard.on('success', function() {
+        _this.$message({
+          message: '复制成功！',
+          type: 'success'
+        })
+      })
+      clipboard.on('error', function() {
+        _this.$message({
+          message: '复制失败，请手动选择复制！',
+          type: 'error'
+        })
+      })
+    },
     getList(isCreate) {
       this.listLoading = true
       console.log(this.listQuery)
@@ -161,6 +185,10 @@ export default {
         self.advertise_success = response.data.success_info
         self.advertise_warning = response.data.warning
         self.advertise_error = response.data.error
+        self.isSuccess = true
+        if (self.advertise_success && self.advertise_success.advertise_url) {
+          self.advertise_url = self.advertise_success.advertise_url
+        }
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false

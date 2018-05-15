@@ -169,7 +169,7 @@ export default {
         created_customer_id: undefined
       },
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
-      dialogFormVisible2dialogFormVisible2: false,
+      dialogFormVisible2: false,
       dialogStatus: '', // 用来记录当前的弹出的编辑框是create，还是update，进而显示不同的按钮，按钮触发不同的方法。
       textMap: { // dialog， el-dialog 用于显示title
         update: 'Edit',

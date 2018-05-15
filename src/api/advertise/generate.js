@@ -15,3 +15,13 @@ export function generateAdvertieseUrl(query) {
     params: query
   })
 }
+
+export function generateMutilAdvertise(excelFile) {
+  return request({
+    url: '/v1/whole/advertise/generatemutiladvertise',
+    method: 'post',
+    responseType: 'blob',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    excelFile
+  })
+}
