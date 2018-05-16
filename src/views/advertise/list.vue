@@ -188,7 +188,7 @@ export default {
         created_end: undefined, // 搜索结束时间
         created_begin_timestamps: undefined, // 搜索开始时间戳
         created_end_timestamps: undefined, // 搜索结束时间戳
-        sort: '+id' // 排序的字段，默认为id升序排序
+        sort: '-id' // 排序的字段，默认为id升序排序
       },
       ownNameOptions: {},
       contentOptions: {},

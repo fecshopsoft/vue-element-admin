@@ -31,8 +31,12 @@
 				</tbody>
       </table>
       <br/><br/><br/>
+       <div style="color:#666">
+            注意：使用该功能，可以一次性生成多个广告，每个广告对应不同的fid.
+        </div>
+        <br/> 
       <el-collapse >
-        <el-collapse-item title="备注说明" name="1">
+        <el-collapse-item title="Excel填写说明" name="1">
           <table class="el-table advertise_table2">
             <tbody>
                 
@@ -41,61 +45,38 @@
                 <td>推广的url（<span style="color:#cc0000">必填</span>）</td>
               </tr>
               <tr class="trbg">
-                <td>utm_source:</td>
+                <td>fec_source（渠道）:</td>
                 <td>渠道名称（<span style="color:#cc0000">必填</span>）</td>
               </tr>
               <tr class="">
-                <td>utm_medium:</td>
+                <td>fec_medium（子渠道）:</td>
                 <td>子渠道名称（选填）| 红人（当渠道是KOL-开头时，这里填写的是红人姓名，必填。）</td>
               </tr>
               <tr class="trbg">
-                <td>utm_campaign:</td>
+                <td>fec_campaign（活动）:</td>
                 <td>活动（<span style="color:#cc0000">必填</span>）</td>
               </tr>
               <tr class="">
-                <td>utm_design:</td>
+                <td>fec_design（美工）:</td>
                 <td>广告设计人员（选填）</td>
               </tr>
               <tr class="trbg">
-                <td>utm_content:</td>
-                <td>推广员工erp账户（选填，<span style="color:#cc0000">如果不填写，系统默认当前用户的erp</span>）</td>
+                <td>advertise_cost（广告费）:</td>
+                <td>广告费，请使用store基础货币，因为trace接收的订单等金额都是基础货币</td>
+              </tr>	
+              <tr class="trbg">
+                <td>remark（广告备注）:</td>
+                <td>广告备注信息，您可以备注一下您的广告信息。</td>
               </tr>			
             </tbody>
           </table>
+          <div>
+            <br>
+            生成的广告，广告员工就是当前的用户，广告小组就是广告员工所在的小组。
+            </br>
+          </div>
         </el-collapse-item>
       </el-collapse>
-      <br/><br/><br/>
-      <div class="message">
-        <div>
-          <fieldset id="fieldset_table_qbe">
-            <legend style="color:green">{{$t('table.advertise_success') }}</legend>
-            <div  class="tishi_info" style="color:green">
-              <table class="el-table advertise_table">
-                <tbody>
-                  <tr><td>{{$t('table.success_info')}}</td><td><span v-if="isSuccess">您已经成功生成了广告链接，点击下面的按钮复制，就可以了。</span></td></tr>
-                  <tr><td>{{$t('table.advertise_url')}}</td><td>{{advertise_success.advertise_url}}</td></tr>
-                  <tr><td>{{$t('table.click_to_copy')}}</td><td>
-                    <input  type="text" id="success_form_input" readonly="readonly" v-model="advertise_url"/>
-                    <button ref="copy" data-clipboard-action="copy" data-clipboard-target="#success_form_input" @click="copyLink">复制</button>  
-                  </td></tr>
-                  <tr><td>{{$t('table.created_at')}}</td><td>{{advertise_success.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</td></tr>
-                  <tr><td>{{$t('table.origin_url')}}</td><td>{{advertise_success.origin_url}}</td></tr>
-                  <tr><td>{{$t('table.fid')}}</td><td>{{advertise_success.fid}}</td></tr>
-                  <tr><td>{{$t('table.channel')}}</td><td>{{advertise_success.channel}}</td></tr>
-                  <tr><td>{{$t('table.channel_child')}}</td><td>{{advertise_success.channel_child}}</td></tr>
-                  <tr><td>{{$t('table.campaign')}}</td><td>{{advertise_success.campaign}}</td></tr>
-                  <tr><td>{{$t('table.design_person')}}</td><td>{{advertise_success.design_person}}</td></tr>
-                  <tr><td>{{$t('table.advertise_person')}}</td><td>{{advertise_success.advertise_person}}</td></tr>
-                  <tr><td>{{$t('table.advertise_market_group')}}</td><td>{{advertise_success.advertise_market_group}}</td></tr>
-                  
-                  <tr><td>{{$t('table.advertise_cost')}}</td><td>{{advertise_success.advertise_cost}}</td></tr>
-                  <tr><td>{{$t('table.advertise_remark')}}</td><td>{{advertise_success.advertise_remark}}</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </fieldset>
-        </div>
-      </div>
       <br>
     </div>
   </div>
@@ -123,38 +104,17 @@ export default {
       listLoading: false,
       advertise_success: {},
       advertise_error: '',
-      copyBtn: null,
       isSuccess: false,
       advertise_url: '',
       downloadXlsxUrl: '',
       advertise_warning: ''
     }
   },
-  mounted() {
-    this.copyBtn = new this.Clipboard(this.$refs.copy)
-  },
   created() {
     var baseUrl = this.env_base_api
     this.downloadXlsxUrl = baseUrl + '/v1/whole/advertise/download/mutilxlsx'
   },
   methods: {
-    copyLink() {
-      var _this = this
-      var clipboard = _this.copyBtn
-      clipboard.on('success', function() {
-        _this.$message({
-          message: '复制成功！',
-          type: 'success'
-        })
-      })
-      clipboard.on('error', function() {
-        _this.$message({
-          message: '复制失败，请手动选择复制！',
-          type: 'error'
-        })
-      })
-    },
-
     generateMutilAdvertise() {
       var self = this
       self.listLoading = true
@@ -167,7 +127,8 @@ export default {
         url: dXlsxUrl,
         data: excelFile,
         headers: {
-          'X-Token': getToken()
+          'X-Token': getToken(),
+          'Content-Type': 'multipart/form-data'
         },
         responseType: 'blob' // important
       }).then((response) => { // 处理返回的文件流
