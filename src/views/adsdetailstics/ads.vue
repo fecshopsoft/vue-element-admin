@@ -66,7 +66,7 @@
       
       <el-table-column sortable="custom" prop="fec_content" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_content')">
         <template slot-scope="scope">
-          <span class="link-type">{{scope.row.fec_content}}</span>
+          <span class="link-type">{{scope.row.fec_content | parseContentName(contentOptions)}}</span>
         </template>
       </el-table-column>
       <el-table-column sortable="custom" prop="register_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.register_count')">
@@ -226,13 +226,13 @@
               <el-input v-model="temp.fec_medium_main"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.fec_market_group')" >
-              <el-input v-model="temp.fec_market_group"></el-input>
+              <el-input :value="temp.fec_market_group | parseMarketGroupName(marketGroupOptions)"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.fec_content')" >
-              <el-input v-model="temp.fec_content"></el-input>
+              <el-input :value="temp.fec_content | parseContentName(contentOptions)"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.fec_design')" >
-              <el-input v-model="temp.fec_design"></el-input>
+              <el-input :value="temp.fec_design | parseDesignName(designOptions)"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.register_count')" >
               <el-input v-model="temp.register_count"></el-input>
@@ -361,10 +361,16 @@
               height="550"
               >
               <el-table-column
-                prop="invoice" fixed
+                prop="invoice"
                 :label="$t('table.order_invoice')"
                 sortable
                 width="110">
+              </el-table-column>
+              <el-table-column
+                prop="amount"
+                :label="$t('table.order_amount')"
+                sortable
+                width="130">
               </el-table-column>
 
               <el-table-column
@@ -376,6 +382,72 @@
               <el-table-column
                 prop="payment_status"
                 :label="$t('table.order_payment_status')"
+                sortable
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="created_at"
+                :label="$t('table.created_at')"
+                sortable
+                :formatter="formatterCreatedAt"
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="email"
+                :label="$t('table.email')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="first_name"
+                :label="$t('table.first_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="last_name"
+                :label="$t('table.last_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="country_name"
+                :label="$t('table.country_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="state_name"
+                :label="$t('table.state_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="city"
+                :label="$t('table.city')"
+                sortable
+                width="110">
+              </el-table-column>
+
+              <el-table-column
+                prop="address1"
+                :label="$t('table.address1')"
+                sortable
+                width="110">
+              </el-table-column>
+
+              <el-table-column
+                prop="address2"
+                :label="$t('table.address2')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="zip"
+                :label="$t('table.zip')"
                 sortable
                 width="110">
               </el-table-column>
@@ -397,6 +469,90 @@
                 sortable
                 width="110">
               </el-table-column>
+              
+              <el-table-column
+                 width="350"
+                prop="products"
+                :label="$t('table.products')"
+                :formatter="formatterOrderProduct">
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.fail_order')" name="chart_11_2">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.fail_order_info"
+              style="width: 100%"
+              :default-sort = "{prop: 'invoice', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="invoice"
+                :label="$t('table.order_invoice')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="amount"
+                :label="$t('table.order_amount')"
+                sortable
+                width="130">
+              </el-table-column>
+
+              <el-table-column
+                prop="payment_type"
+                :label="$t('table.order_payment_type')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="payment_status"
+                :label="$t('table.order_payment_status')"
+                sortable
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="created_at"
+                :label="$t('table.created_at')"
+                sortable
+                :formatter="formatterCreatedAt"
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="email"
+                :label="$t('table.email')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="first_name"
+                :label="$t('table.first_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="last_name"
+                :label="$t('table.last_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              
+              <el-table-column
+                prop="country_name"
+                :label="$t('table.country_name')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="state_name"
+                :label="$t('table.state_name')"
+                sortable
+                width="110">
+              </el-table-column>
               <el-table-column
                 prop="city"
                 :label="$t('table.city')"
@@ -405,11 +561,43 @@
               </el-table-column>
 
               <el-table-column
-                prop="amount"
-                :label="$t('table.order_amount')"
+                prop="address1"
+                :label="$t('table.address1')"
                 sortable
-                width="130">
+                width="110">
               </el-table-column>
+
+              <el-table-column
+                prop="address2"
+                :label="$t('table.address2')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="zip"
+                :label="$t('table.zip')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="shipping"
+                :label="$t('table.order_shipping')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="discount_amount"
+                :label="$t('table.order_discount_amount')"
+                sortable
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="coupon"
+                :label="$t('table.coupon')"
+                sortable
+                width="110">
+              </el-table-column>
+              
               <el-table-column
                  width="350"
                 prop="products"
@@ -417,6 +605,190 @@
                 :formatter="formatterOrderProduct">
               </el-table-column>
             </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.fec_medium')" name="chart_11_3">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.fec_medium_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'fec_medium_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="fec_medium_name"
+                :label="$t('table.fec_medium')"
+                sortable
+                width="200">
+              </el-table-column>
+              <el-table-column
+                prop="fec_medium_count"
+                :label="$t('table.pv_count')"
+                sortable
+                min-width="400"
+                >
+              </el-table-column>
+              </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.first_referrer_domain')" name="chart_11_4">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.first_referrer_domain_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'first_referrer_domain_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="first_referrer_domain_name"
+                :label="$t('table.first_referrer_domain')"
+                sortable
+                width="200">
+              </el-table-column>
+              <el-table-column
+                prop="first_referrer_domain_count"
+                :label="$t('table.pv_count')"
+                sortable
+                min-width="400"
+                >
+              </el-table-column>
+              </el-table>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.fec_campaign')" name="chart_11_5">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.fec_campaign_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'fec_campaign_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="fec_campaign_name"
+                :label="$t('table.fec_campaign')"
+                sortable
+                width="200">
+              </el-table-column>
+              <el-table-column
+                prop="fec_campaign_count"
+                :label="$t('table.pv_count')"
+                sortable
+                min-width="400"
+                >
+              </el-table-column>
+              </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.search_visit_info')" name="chart_11_6">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.search_visit_info_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'search_visit_info_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="search_visit_info_name"
+                :label="$t('table.search_visit_info')"
+                sortable
+                width="200">
+              </el-table-column>
+              <el-table-column
+                prop="search_visit_info_count"
+                :label="$t('table.pv_count')"
+                sortable
+                min-width="400"
+                >
+              </el-table-column>
+              </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.category_visit_info')" name="chart_11_7">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.category_visit_info_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'category_visit_info_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="category_visit_info_name"
+                :label="$t('table.category_visit_info')"
+                sortable
+                width="200">
+              </el-table-column>
+              <el-table-column
+                prop="category_visit_info_count"
+                :label="$t('table.pv_count')"
+                sortable
+                min-width="400"
+                >
+              </el-table-column>
+              </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.sku_info')" name="chart_11_8">
+          <div class='chart-container'>
+            <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
+              :data="temp.sku_info_format"
+              style="width: 100%"
+              :default-sort = "{prop: 'sku_visit_count', order: 'descending'}"
+              height="550"
+              >
+              <el-table-column
+                prop="sku"
+                :label="$t('table.sku')"
+                sortable
+                width="100">
+              </el-table-column>
+              
+              <el-table-column
+                prop="image"
+                :formatter="formatterProductImage"
+                :label="$t('table.image')"
+                >
+              </el-table-column>
+
+              <el-table-column
+                prop="sku_visit_count" 
+                :label="$t('table.sku_visit_count')"
+                sortable
+                >
+              </el-table-column>
+              <el-table-column
+                prop="sku_cart_count" 
+                :label="$t('table.sku_cart_count')"
+                sortable
+                >
+              </el-table-column>
+              <el-table-column
+                prop="sku_order_count" 
+                :label="$t('table.sku_order_count')"
+                sortable
+                >
+              </el-table-column>
+              <el-table-column
+                prop="sku_payment_order_count" 
+                :label="$t('table.sku_payment_order_count')"
+                sortable
+                >
+              </el-table-column>
+              
+            </el-table>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.fec_app')" name="chart_15">
+          <div class='chart-container'>
+            <piechart className="chart_15" id="chart_15" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_fec_app.legenddata"
+              :seriesdata="chart_fec_app.seriesdata"
+            ></piechart>
           </div>
         </el-tab-pane>
 
@@ -436,6 +808,16 @@
             ></piechart>
           </div>
         </el-tab-pane>
+        
+        
+        <el-tab-pane :label="$t('table.couontry_code')" name="chart_14_11">
+          <div class='chart-container'>
+            <piechart className="chart_14_11" id="chart_14_11" :width="chartWidth" :height="chartHeight"
+              :legenddata="chart_couontry_code.legenddata"
+              :seriesdata="chart_couontry_code.seriesdata"
+            ></piechart>
+          </div>
+        </el-tab-pane>
         <el-tab-pane :label="$t('table.browser_name')" name="chart_14_1">
           <div class='chart-container'>
             <piechart className="chart_14_1" id="chart_14_1" :width="chartWidth" :height="chartHeight"
@@ -444,15 +826,7 @@
             ></piechart>
           </div>
         </el-tab-pane>
-        <el-tab-pane :label="$t('table.fec_app')" name="chart_15">
-          <div class='chart-container'>
-            <piechart className="chart_15" id="chart_15" :width="chartWidth" :height="chartHeight"
-              :legenddata="chart_fec_app.legenddata"
-              :seriesdata="chart_fec_app.seriesdata"
-            ></piechart>
-          </div>
-        </el-tab-pane>
-
+        
         <el-tab-pane :label="$t('table.resolution')" name="chart_16">
           <div class='chart-container'>
             <piechart className="chart_16" id="chart_16" :width="chartWidth" :height="chartHeight"
@@ -588,6 +962,42 @@
           </div>
         </el-tab-pane>
 
+        <el-tab-pane :label="$t('table.register_count')" name="chart_211_1">
+          <div class='chart-container'>
+            <linechart className="chart_211_1" id="chart_211_1" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('register_count')) ? {'register_count': temp.trend.register_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.login_count')" name="chart_211_2">
+          <div class='chart-container'>
+            <linechart className="chart_211_2" id="chart_211_2" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('login_count')) ? {'login_count': temp.trend.login_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.category_count')" name="chart_211_3">
+          <div class='chart-container'>
+            <linechart className="chart_211_3" id="chart_211_3" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('category_count')) ? {'category_count': temp.trend.category_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.sku_count')" name="chart_211_4">
+          <div class='chart-container'>
+            <linechart className="chart_211_4" id="chart_211_4" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('sku_count')) ? {'sku_count': temp.trend.sku_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.search_count')" name="chart_211_5">
+          <div class='chart-container'>
+            <linechart className="chart_211_5" id="chart_211_5" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('search_count')) ? {'search_count': temp.trend.search_count} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane :label="$t('table.cart_count')" name="chart_212">
           <div class='chart-container'>
             <linechart className="chart_212" id="chart_212" :width="chartWidth" :height="chartHeight"
@@ -659,6 +1069,21 @@
             ></lineratechart>
           </div>
         </el-tab-pane>
+
+        <el-tab-pane :label="$t('table.success_order_c_success_uv_rate')" name="chart_219">
+          <div class='chart-container'>
+            <linechart className="chart_219" id="chart_219" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_c_success_uv_rate')) ? {'success_order_c_success_uv_rate': temp.trend.success_order_c_success_uv_rate} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('table.success_order_c_all_uv_rate')" name="chart_220">
+          <div class='chart-container'>
+            <linechart className="chart_220" id="chart_220" :width="chartWidth" :height="chartHeight"
+              :lineData="( temp.trend && temp.trend.hasOwnProperty('success_order_c_all_uv_rate')) ? {'success_order_c_all_uv_rate': temp.trend.success_order_c_all_uv_rate} : null"
+            ></linechart>
+          </div>
+        </el-tab-pane>
         
       </el-tabs>
       <div slot="footer" class="dialog-footer">
@@ -676,7 +1101,7 @@ import waves from '@/directive/waves' // 水波纹指令
 import Linechart from '@/components/Charts/line'
 import Lineratechart from '@/components/Charts/lineRate'
 import Piechart from '@/components/Charts/pie'
-// import { parseTime } from '@/utils' // 时间格式处理
+import { parseTime } from '@/utils' // 时间格式处理
 // import Tinymce from '@/components/Tinymce' // 富文本编辑框
 export default {
   name: 'marketGroupComplexTable',
@@ -722,7 +1147,9 @@ export default {
         legenddata: [],
         seriesdata: []
       },
-
+      contentOptions: {},
+      designOptions: {},
+      marketGroupOptions: {},
       tableKey: 0,
       list: null,
       multipleSelection: [],
@@ -757,8 +1184,14 @@ export default {
         id: undefined,
         name: '',
         own_id: '',
-        trend: '',
-        trendLang: '',
+        trend: {},
+        trendLang: {},
+        fec_medium_format: [],
+        first_referrer_domain_format: [],
+        fec_campaign_format: [],
+        search_visit_info_format: [],
+        category_visit_info_format: [],
+        sku_info_format: [],
         created_customer_id: ''
       },
       dialogFormVisible: false, // 编辑数据的弹框，false代表关闭
@@ -791,6 +1224,33 @@ export default {
     },
     rateFloat2(value) {
       return ((100 * value).toFixed(2)) + '%'
+    },
+    parseContentName(value, contentOptions) {
+      var v = parseInt(value)
+      for (var x in contentOptions) {
+        if (contentOptions[x]['key'] === v) {
+          return contentOptions[x]['display_name']
+        }
+      }
+      return value
+    },
+    parseDesignName(value, designOptions) {
+      var v = parseInt(value)
+      for (var x in designOptions) {
+        if (designOptions[x]['key'] === v) {
+          return designOptions[x]['display_name']
+        }
+      }
+      return value
+    },
+    parseMarketGroupName(value, marketGroupOptions) {
+      var v = parseInt(value)
+      for (var x in marketGroupOptions) {
+        if (marketGroupOptions[x]['key'] === v) {
+          return marketGroupOptions[x]['display_name']
+        }
+      }
+      return value
     }
   },
   created() {
@@ -840,6 +1300,9 @@ export default {
         this.listQuery.own_id = response.data.chosen_own_id
         this.initComplete = true
         this.imgApiUrl = response.data.siteImgUrls
+        this.contentOptions = response.data.contentGroupOps
+        this.designOptions = response.data.designGroupOps
+        this.marketGroupOptions = response.data.marketGroupOps
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -882,6 +1345,125 @@ export default {
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       var devideData = this.peiFormat(this.temp.devide)
+      var x = ''
+      // fec_medium_format
+      var fec_medium_format = []
+      var fec_medium = this.temp.fec_medium
+      for (x in fec_medium) {
+        fec_medium_format.push({
+          fec_medium_name: x,
+          fec_medium_count: fec_medium[x]
+        })
+      }
+      this.temp.fec_medium_format = fec_medium_format
+
+      // first_referrer_domain_format first_referrer_domain
+      var first_referrer_domain_format = []
+      var first_referrer_domain = this.temp.first_referrer_domain
+      for (x in first_referrer_domain) {
+        first_referrer_domain_format.push({
+          first_referrer_domain_name: x,
+          first_referrer_domain_count: first_referrer_domain[x]
+        })
+      }
+      this.temp.first_referrer_domain_format = first_referrer_domain_format
+
+      // fec_campaign_format
+      var fec_campaign_format = []
+      var fec_campaign = this.temp.fec_campaign
+      for (x in fec_campaign) {
+        fec_campaign_format.push({
+          fec_campaign_name: x,
+          fec_campaign_count: fec_campaign[x]
+        })
+      }
+      this.temp.fec_campaign_format = fec_campaign_format
+
+      // search_visit_info_format
+      var search_visit_info_format = []
+      var search_visit_info = this.temp.search_visit_info
+      for (x in search_visit_info) {
+        search_visit_info_format.push({
+          search_visit_info_name: x,
+          search_visit_info_count: search_visit_info[x]
+        })
+      }
+      this.temp.search_visit_info_format = search_visit_info_format
+
+      // category_visit_info
+      var category_visit_info_format = []
+      var category_visit_info = this.temp.category_visit_info
+      for (x in category_visit_info) {
+        category_visit_info_format.push({
+          category_visit_info_name: x,
+          category_visit_info_count: category_visit_info[x]
+        })
+      }
+      this.temp.category_visit_info_format = category_visit_info_format
+      // sku_info_format
+      // sku   image sku_visit_count  sku_cart_count sku_order_count  sku_payment_order_count
+      var sku_info_format = []
+      var sku_visit_info = this.temp.sku_visit_info
+      var cart_sku_info = this.temp.cart_sku_info
+      var order_sku_info = this.temp.order_sku_info
+      var success_order_sku_info = this.temp.success_order_sku_info
+      var exist_sku = {}
+      var imgSrc = ''
+      for (x in sku_visit_info) {
+        imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
+        exist_sku[x] = x
+        sku_info_format.push({
+          sku: x,
+          image: imgSrc,
+          sku_visit_count: sku_visit_info[x],
+          sku_cart_count: (cart_sku_info[x] ? cart_sku_info[x] : 0),
+          sku_order_count: (order_sku_info[x] ? order_sku_info[x] : 0),
+          sku_payment_order_count: (success_order_sku_info[x] ? success_order_sku_info[x] : 0)
+        })
+      }
+      for (x in cart_sku_info) {
+        if (!exist_sku[x]) {
+          imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
+          exist_sku[x] = x
+          sku_info_format.push({
+            sku: x,
+            image: imgSrc,
+            sku_visit_count: (sku_visit_info[x] ? sku_visit_info[x] : 0),
+            sku_cart_count: (cart_sku_info[x] ? cart_sku_info[x] : 0),
+            sku_order_count: (order_sku_info[x] ? order_sku_info[x] : 0),
+            sku_payment_order_count: (success_order_sku_info[x] ? success_order_sku_info[x] : 0)
+          })
+        }
+      }
+      for (x in order_sku_info) {
+        if (!exist_sku[x]) {
+          imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
+          exist_sku[x] = x
+          sku_info_format.push({
+            sku: x,
+            image: imgSrc,
+            sku_visit_count: (sku_visit_info[x] ? sku_visit_info[x] : 0),
+            sku_cart_count: (cart_sku_info[x] ? cart_sku_info[x] : 0),
+            sku_order_count: (order_sku_info[x] ? order_sku_info[x] : 0),
+            sku_payment_order_count: (success_order_sku_info[x] ? success_order_sku_info[x] : 0)
+          })
+        }
+      }
+      for (x in success_order_sku_info) {
+        if (!exist_sku[x]) {
+          imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
+          exist_sku[x] = x
+          sku_info_format.push({
+            sku: x,
+            image: imgSrc,
+            sku_visit_count: (sku_visit_info[x] ? sku_visit_info[x] : 0),
+            sku_cart_count: (cart_sku_info[x] ? cart_sku_info[x] : 0),
+            sku_order_count: (order_sku_info[x] ? order_sku_info[x] : 0),
+            sku_payment_order_count: (success_order_sku_info[x] ? success_order_sku_info[x] : 0)
+          })
+        }
+      }
+      this.temp.sku_info_format = sku_info_format
 
       this.chart_devide.legenddata = devideData[0]
       this.chart_devide.seriesdata = devideData[1]
@@ -917,6 +1499,8 @@ export default {
       var self = this
       var responseTrend = {}
       var responseTrendLang = {}
+      this.temp.trend = {}
+      this.temp.trendLang = {}
       var queryData = {
         'fid': row.fid,
         'service_date_str': row.service_date_str,
@@ -967,13 +1551,20 @@ export default {
         var imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, product.sku)
         console.log(imgSrc)
         y.push(this.$createElement('tr', [
+          this.$createElement('img', { attrs: { style: 'width:50px', src: imgSrc }}),
           this.$createElement('td', product.sku),
           this.$createElement('td', product.qty),
-          this.$createElement('td', product.price),
-          this.$createElement('img', { attrs: { style: 'width:50px', src: imgSrc }})
+          this.$createElement('td', product.price)
         ]))
       }
       return this.$createElement('table', y)
+    },
+    formatterCreatedAt(row, column) {
+      var created_at = row.created_at
+      return parseTime(created_at, '{y}-{m}-{d} {h}:{i}:{s}')
+    },
+    formatterProductImage(row, column) {
+      return this.$createElement('img', { attrs: { style: 'width:50px', src: row.image }})
     },
     getSkuImg(imgApiUrl, website_id, sku) {
       if (imgApiUrl && website_id && sku) {
@@ -1001,6 +1592,10 @@ export default {
 .el-table__body table tr td {
   color:#666;
   padding:5px 8px;
+  font-size:10px;
 
+}
+.el-table__body tr td {
+  font-size:10px;
 }
 </style>

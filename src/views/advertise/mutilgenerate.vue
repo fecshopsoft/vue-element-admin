@@ -73,7 +73,7 @@
           <div>
             <br>
             生成的广告，广告员工就是当前的用户，广告小组就是广告员工所在的小组。
-            </br>
+            <br>
           </div>
         </el-collapse-item>
       </el-collapse>
