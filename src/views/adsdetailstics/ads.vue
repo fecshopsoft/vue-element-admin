@@ -1,8 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" :placeholder="$t('table.fid')" v-model="listQuery.fid">
-      </el-input>
       
       <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
         <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name" :value="item.key">
@@ -13,7 +11,18 @@
         <el-option v-for="item in  siteIdOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
       </el-select>
-      
+
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" :placeholder="$t('table.fid')" v-model="listQuery.fid">
+      </el-input>
+
+      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_content" :placeholder="$t('table.fec_content')">
+        <el-option v-for="item in  contentSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_design" :placeholder="$t('table.fec_design')">
+        <el-option v-for="item in  designSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.service_date_str_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.service_date_str_begin')">
       </el-date-picker>
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.service_date_str_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.service_date_str_end')">
@@ -69,33 +78,7 @@
           <span class="link-type">{{scope.row.fec_content | parseContentName(contentOptions)}}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" prop="register_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.register_count')">
-        <template slot-scope="scope">
-          <span class="link-type">{{scope.row.register_count}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column sortable="custom" prop="login_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.login_count')">
-        <template slot-scope="scope">
-          <span class="link-type">{{scope.row.login_count}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column sortable="custom" prop="category_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.category_count')">
-        <template slot-scope="scope">
-          <span class="link-type">{{scope.row.category_count}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column sortable="custom" prop="sku_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.sku_count')">
-        <template slot-scope="scope">
-          <span class="link-type">{{scope.row.sku_count}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column sortable="custom" prop="search_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.search_count')">
-        <template slot-scope="scope">
-          <span class="link-type">{{scope.row.search_count}}</span>
-        </template>
-      </el-table-column>
-
+      
       <el-table-column sortable="custom" prop="pv" show-overflow-tooltip min-width="80px" align="left" :label="$t('table.pv')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.pv}}</span>
@@ -128,6 +111,32 @@
       <el-table-column sortable="custom" prop="drop_out_rate" show-overflow-tooltip min-width="90px" align="right" :label="$t('table.drop_out_rate')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.drop_out_rate | rateFloat2()}}</span>  
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="register_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.register_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.register_count}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom" prop="login_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.login_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.login_count}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="category_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.category_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.category_count}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="sku_count" show-overflow-tooltip min-width="110px" align="left" :label="$t('table.sku_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.sku_count}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom" prop="search_count" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.search_count')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.search_count}}</span>
         </template>
       </el-table-column>
 
@@ -1150,6 +1159,8 @@ export default {
       contentOptions: {},
       designOptions: {},
       marketGroupOptions: {},
+      contentSelectOptions: {},
+      designSelectOptions: {},
       tableKey: 0,
       list: null,
       multipleSelection: [],
@@ -1163,6 +1174,8 @@ export default {
         limit: 20, // 每页的默认显示数据行数
         // id: undefined
         fid: undefined, // 按照username搜索
+        fec_content: undefined, // 按照username搜索
+        fec_design: undefined,
         own_id: undefined,
         website_id: undefined,
         // type: undefined,
@@ -1303,6 +1316,8 @@ export default {
         this.contentOptions = response.data.contentGroupOps
         this.designOptions = response.data.designGroupOps
         this.marketGroupOptions = response.data.marketGroupOps
+        this.contentSelectOptions = response.data.contentSelectOps
+        this.designSelectOptions = response.data.designSelectOps
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
