@@ -44,7 +44,7 @@
       </el-table-column>
       -->
       
-      <el-table-column sortable="custom" prop="fec_content" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_content')">
+      <el-table-column fixed sortable="custom" prop="fec_content" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_content')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.fec_content | parseContentName(contentOptions)}}</span>
         </template>
@@ -1484,7 +1484,7 @@ export default {
         })
       }
       for (x in cart_sku_info) {
-        if (!exist_sku[x]) {
+        if (!exist_sku[x] && x) {
           imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
           exist_sku[x] = x
           sku_info_format.push({

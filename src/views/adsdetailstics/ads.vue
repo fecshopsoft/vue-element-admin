@@ -1437,7 +1437,7 @@ export default {
         })
       }
       for (x in cart_sku_info) {
-        if (!exist_sku[x]) {
+        if (!exist_sku[x] && x) {
           imgSrc = this.getSkuImg(this.imgApiUrl, this.listQuery.website_id, x)
           exist_sku[x] = x
           sku_info_format.push({
