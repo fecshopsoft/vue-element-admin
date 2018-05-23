@@ -161,6 +161,7 @@ export default {
     sku_visit_count: 'Sku访问Pv数',
     image: '图片',
     sku_info: 'Sku',
+    fec_edm: 'EDM',
 
     fec_source: '渠道',
     fec_medium_main: '主子渠道',

@@ -162,6 +162,7 @@ export default {
     sku_visit_count: 'Sku Visit Count',
     image: 'Image',
     sku_info: 'Sku',
+    fec_edm: 'EDM',
 
     fec_source: 'Channel',
     fec_medium_main: 'Main Child Channel',
