@@ -18,6 +18,24 @@
       </el-input>
       <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" :placeholder="$t('table.fid')" v-model="listQuery.fid">
       </el-input>
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" :placeholder="$t('table.fec_medium')" v-model="listQuery.fec_medium">
+      </el-input>
+      
+      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_market_group" :placeholder="$t('table.fec_market_group')">
+        <el-option v-for="item in  marketGroupSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+
+      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_content" :placeholder="$t('table.fec_content')">
+        <el-option v-for="item in  contentSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+
+      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_design" :placeholder="$t('table.fec_design')">
+        <el-option v-for="item in  designSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
+
 
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.service_date_str_begin" type="date" format="yyyy-MM-dd" :placeholder="$t('table.service_date_str_begin')">
       </el-date-picker>
@@ -69,6 +87,29 @@
           <span class="link-type">{{scope.row.service_date_str}}</span>
         </template>
       </el-table-column>
+      
+      <el-table-column sortable="custom"  prop="fec_medium" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_medium')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.fec_medium }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column sortable="custom"  prop="fec_content" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_content')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.fec_content | parseContentName(contentOptions)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom"  prop="fec_market_group" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_market_group')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.fec_market_group  | parseMarketGroupName(marketGroupOptions)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable="custom"  prop="fec_design" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.fec_design')">
+        <template slot-scope="scope">
+          <span class="link-type">{{scope.row.fec_design  | parseDesignName(designOptions)}}</span>
+        </template>
+      </el-table-column>
+      
       
       <el-table-column sortable="custom" prop="pv" show-overflow-tooltip min-width="80px" align="left" :label="$t('table.pv')">
         <template slot-scope="scope">
@@ -227,6 +268,19 @@
 
             <el-form-item :label="$t('table.fec_campaign')" >
               <el-input :value="temp.fec_campaign"></el-input>
+            </el-form-item>
+
+            <el-form-item :label="$t('table.fec_medium')" >
+              <el-input v-model="temp.fec_medium"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('table.fec_market_group')" >
+              <el-input :value="temp.fec_market_group | parseMarketGroupName(marketGroupOptions)"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('table.fec_content')" >
+              <el-input :value="temp.fec_content | parseContentName(contentOptions)"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('table.fec_design')" >
+              <el-input :value="temp.fec_design | parseDesignName(designOptions)"></el-input>
             </el-form-item>
             
             <el-form-item :label="$t('table.register_count')" >
@@ -1196,7 +1250,9 @@ export default {
       contentOptions: {},
       designOptions: {},
       marketGroupOptions: {},
-      // contentSelectOptions: {},
+      marketGroupSelectOptions: {},
+      contentSelectOptions: {},
+      designSelectOptions: {},
       designSelectOps: {},
       tableKey: 0,
       list: null,
@@ -1212,6 +1268,10 @@ export default {
         // id: undefined
         fec_edm: undefined, // 按照username搜索
         fec_campaign: undefined, // 按照username搜索
+        fec_medium: undefined,
+        fec_market_group: undefined,
+        fec_content: undefined,
+        fec_design: undefined,
         fid: undefined, // 按照username搜索
         own_id: undefined,
         website_id: undefined,
@@ -1360,7 +1420,9 @@ export default {
         this.contentOptions = response.data.contentGroupOps
         this.designOptions = response.data.designGroupOps
         this.marketGroupOptions = response.data.marketGroupOps
-        // this.designSelectOps = response.data.designSelectOps
+        this.contentSelectOptions = response.data.contentSelectOps
+        this.designSelectOptions = response.data.designSelectOps
+        this.marketGroupSelectOptions = response.data.marketGroupSelectOps
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
