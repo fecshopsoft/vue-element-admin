@@ -204,8 +204,7 @@ export const asyncRouterMap = [
       roles: ['super_admin', 'common_admin', 'common_admin_child']
     },
     children: [
-      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata2', meta: { title: 'userstics_userdata2', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
     ]
   },
 
@@ -267,7 +266,7 @@ export const asyncRouterMap = [
     path: '/charts',
     component: Layout,
     redirect: 'noredirect',
-    hidden: false,
+    hidden: true,
     name: 'charts',
     meta: {
       title: 'charts',
