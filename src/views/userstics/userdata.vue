@@ -7,7 +7,7 @@
         </el-option>
       </el-select>
 
-      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.website_id" :placeholder="$t('table.website_id')">
+      <el-select clearable class="filter-item" style="width: 150px" v-model="listQuery.website_id" :placeholder="$t('table.website_id')">
         <el-option v-for="item in  siteIdOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
       </el-select>
@@ -21,14 +21,14 @@
       </el-input>
       <el-input clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" :placeholder="$t('table.fec_source')" v-model="listQuery.fec_source">
       </el-input>
-      <el-input clearable @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" :placeholder="$t('table.fec_campaign')" v-model="listQuery.fec_campaign">
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 152px;" class="filter-item" :placeholder="$t('table.fec_campaign')" v-model="listQuery.fec_campaign">
       </el-input>
-      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_content" :placeholder="$t('table.fec_content')">
+      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.fec_content" :placeholder="$t('table.fec_content')">
         <el-option v-for="item in  contentSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
       </el-select>
 
-      <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.fec_design" :placeholder="$t('table.fec_design')">
+      <el-select clearable class="filter-item" style="width: 150px" v-model="listQuery.fec_design" :placeholder="$t('table.fec_design')">
         <el-option v-for="item in  designSelectOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
       </el-select>
@@ -42,6 +42,31 @@
       </el-input>
       <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" v-model="listQuery.pv_end"  :placeholder="$t('table.pv_end')">
       </el-input>
+
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 124px;" class="filter-item" v-model="listQuery.visit_page_sku_begin" :placeholder="$t('table.visit_page_sku_begin')">
+      </el-input>
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 124px;" class="filter-item" v-model="listQuery.visit_page_sku_end"  :placeholder="$t('table.visit_page_sku_end')">
+      </el-input>
+
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_cart_begin" :placeholder="$t('table.visit_page_cart_begin')">
+      </el-input>
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_cart_end"  :placeholder="$t('table.visit_page_cart_end')">
+      </el-input>
+
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_order_begin" :placeholder="$t('table.visit_page_order_begin')">
+      </el-input>
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_order_end"  :placeholder="$t('table.visit_page_order_end')">
+      </el-input>
+
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_order_processing_begin" :placeholder="$t('table.visit_page_order_processing_begin')">
+      </el-input>
+      <el-input clearable @keyup.enter.native="handleFilter" style="width: 140px;" class="filter-item" v-model="listQuery.visit_page_order_processing_end"  :placeholder="$t('table.visit_page_order_processing_end')">
+      </el-input>
+      
+      <el-select clearable class="filter-item" style="width: 100px" v-model="listQuery.is_return" :placeholder="$t('table.is_return_if')">
+        <el-option v-for="item in  isReturnOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        </el-option>
+      </el-select>
       <!--
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
@@ -74,7 +99,7 @@
       </el-table-column>
       <el-table-column sortable="custom" prop="is_return" show-overflow-tooltip min-width="100px" align="left" :label="$t('table.is_return_if')">
         <template slot-scope="scope">
-          <span class="link-type">{{scope.row.is_return}}</span>
+          <span class="link-type">{{scope.row.is_return | isReturnName}}</span>
         </template>
       </el-table-column>
       <el-table-column sortable="custom" prop="pv" show-overflow-tooltip min-width="80px" align="left" :label="$t('table.pv')">
@@ -136,15 +161,12 @@
         </template>
       </el-table-column>
       
-
-
       <el-table-column sortable="custom" prop="fid_main"  show-overflow-tooltip  width="110px" align="left" :label="$t('table.fid_main')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.fid_main}}</span>
         </template>
       </el-table-column>
 
-      
       <el-table-column sortable="custom" prop="ip_main"  show-overflow-tooltip  width="110px" align="left" :label="$t('table.ip_main')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.ip_main}}</span>
@@ -610,7 +632,7 @@
             <el-table class="orderInfoTable editonfb" stripe  border fit highlight-current-row 
               :data="tempFormat.sku"
               style="width: 100%"
-              :default-sort = "{prop: 'count', order: 'descending'}"
+              :default-sort = "{prop: 'sku_count', order: 'descending'}"
               height="550"
               >
               <el-table-column
@@ -936,6 +958,10 @@ export default {
         legenddata: [],
         seriesdata: []
       },
+      isReturnOptions: [
+        { key: 1, display_name: 'Yes' },
+        { key: 2, display_name: 'No' }
+      ],
       contentOptions: {},
       designOptions: {},
       marketGroupOptions: {},
@@ -959,8 +985,19 @@ export default {
         fec_source: undefined,
         fec_campaign: undefined,
         customer_email: undefined,
+        is_return: undefined,
         pv_begin: undefined,
         pv_end: undefined,
+
+        visit_page_sku_begin: undefined,
+        visit_page_sku_end: undefined,
+        visit_page_cart_begin: undefined,
+        visit_page_cart_end: undefined,
+        visit_page_order_begin: undefined,
+        visit_page_order_end: undefined,
+        visit_page_order_processing_begin: undefined,
+        visit_page_order_processing_end: undefined,
+
         own_id: undefined,
         website_id: undefined,
         // type: undefined,
@@ -1025,6 +1062,14 @@ export default {
     fixFloat2(value) {
       return parseFloat(value).toFixed(2)
     },
+    isReturnName(value) {
+      if (value === 1) {
+        return 'Yes'
+      } else {
+        return 'No'
+      }
+    },
+
     rateFloat2(value) {
       return ((100 * value).toFixed(2)) + '%'
     },
