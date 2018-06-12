@@ -59,6 +59,7 @@ export default {
     adsdetailstics_childchannel: '子渠道',
     adsdetailstics_channel: '渠道',
     adsdetailstics_edm: 'EDM',
+    siteadvertise_ads: '站内广告',
     dashboard: '首页',
     introduction: '简述',
     documentation: '文档',
@@ -144,6 +145,7 @@ export default {
     dynamicTips1: '固定表头, 按照表头顺序排序',
     dynamicTips2: '不固定表头, 按照点击顺序排序',
     first_name: '名',
+    eid: '站内广告编号',
 
     fid_main: 'Fid-主',
     ip_main: 'Ip-主',
@@ -191,6 +193,7 @@ export default {
     visit_page_order_end: '订单结束数',
     visit_page_order_processing_begin: '支付订单开始数',
     visit_page_order_processing_end: '支付订单结束数',
+    sku_image_api_url: '产品图片ApiUrl',
 
     last_name: '姓',
     state_name: '省/市',

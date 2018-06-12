@@ -149,6 +149,7 @@ export const asyncRouterMap = [
     path: '/adsallstics',
     component: Layout,
     redirect: 'noredirect',
+    hidden: true,
     name: 'adsallstics',
     meta: {
       title: 'advertics_all_statics',
@@ -192,7 +193,20 @@ export const asyncRouterMap = [
       { path: 'adsdetailstics/edm', component: _import('adsdetailstics/edm'), name: 'adsdetailstics-edm', meta: { title: 'adsdetailstics_edm', icon: 'email', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
     ]
   },
-
+  {
+    path: '/siteadvertise',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'siteadvertise',
+    meta: {
+      title: 'user_statistics',
+      icon: 'shoppingCard',
+      roles: ['super_admin', 'common_admin', 'common_admin_child']
+    },
+    children: [
+      { path: 'siteadvertise/ads', component: _import('siteadvertise/ads'), name: 'siteadvertise-ads', meta: { title: 'siteadvertise_ads', icon: 'shoppingCard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+    ]
+  },
   {
     path: '/userstics',
     component: Layout,
@@ -229,6 +243,7 @@ export const asyncRouterMap = [
   {
     path: '/icon',
     component: Layout,
+    hidden: true,
     children: [{
       path: 'index',
       component: _import('svg-icons/index'),
