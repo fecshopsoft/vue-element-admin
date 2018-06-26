@@ -81,10 +81,11 @@
      
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-
+          <!--
           <el-button v-if="scope.row.type === 2 && customerType === 1" type="primary" size="mini" @click="handleUpdate2(scope.row)">{{$t('table.payment')}}</el-button>
-          <el-button v-else disabled type="primary" size="mini" >{{$t('table.payment')}}</el-button>
           
+          <el-button v-else disabled type="primary" size="mini" >{{$t('table.payment')}}</el-button>
+          -->
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>

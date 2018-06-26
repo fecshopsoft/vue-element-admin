@@ -107,15 +107,6 @@
           <el-input v-model="temp.site_name"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="customerType === 1" :label="$t('table.payment_end_time')" prop="payment_end_time">
-          <el-date-picker v-model="temp.payment_end_time" type="date" placeholder="Please pick a date">
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item v-if="customerType === 1"  :label="$t('table.website_day_max_count')" prop="website_day_max_count">
-          <el-input v-model="temp.website_day_max_count"></el-input>
-        </el-form-item>
-
         <el-form-item :label="$t('table.domain')" prop="domain">
           <el-input placeholder="" v-model="temp.domain">
             <template slot="prepend">Http://</template>
@@ -128,17 +119,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('table.trace_js_url')" prop="trace_js_url">
-          <el-input placeholder="系统生成，不需要填写" v-model="temp.trace_js_url">
-            <template slot="prepend">Http://</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item :label="$t('table.trace_api_url')" prop="trace_api_url">
-          <el-input placeholder="系统生成，不需要填写" v-model="temp.trace_api_url">
-            <template slot="prepend">Http://</template>
-          </el-input>
-        </el-form-item>
-
+       
         <el-form-item :label="$t('table.access_token')" prop="access_token">
           <el-input placeholder="系统生成，不需要填写" v-model="temp.access_token"></el-input>
         </el-form-item>
