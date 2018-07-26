@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner></github-corner>
-
+    
     <panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group>
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">

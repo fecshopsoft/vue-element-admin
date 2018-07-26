@@ -51,7 +51,7 @@
           </div>
           <div class="component-item">
             <pan-thumb width="100px" height="100px" image="https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191">
-              vue-element-admin
+              Fecshop Trace
             </pan-thumb>
           </div>
         </el-card>

@@ -117,6 +117,7 @@ export default {
   },
   login: {
     title: '系统登录',
+    fec_title: 'Fecshop Trace 系统',
     logIn: '登录',
     username: '账号',
     password: '密码',

@@ -117,6 +117,7 @@ export default {
   },
   login: {
     title: 'Login Form',
+    fec_title: 'Fecshop Trace System',
     logIn: 'Log in',
     username: 'Username',
     password: 'Password',

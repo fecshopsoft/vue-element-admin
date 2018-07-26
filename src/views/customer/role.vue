@@ -30,11 +30,6 @@
           <span class="link-type">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="left" :label="$t('table.own_name')">
-        <template slot-scope="scope">
-          <span>{{scope.row.own_id | parseOwnName(ownIdOptions) }}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column width="80px" align="left" :label="$t('table.created_customer')">
         <template slot-scope="scope">
@@ -74,13 +69,6 @@
         
         <el-form-item :label="$t('table.role_name')" prop="name">
           <el-input v-model="temp.name"></el-input>
-        </el-form-item>
-
-				<el-form-item :label="$t('table.own_name')">
-          <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
-            <el-option v-for="item in  ownIdOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
         </el-form-item>
 
       </el-form>

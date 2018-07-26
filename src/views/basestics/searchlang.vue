@@ -6,11 +6,6 @@
       <el-input clearable @keyup.enter.native="handleFilter" style="width: 100px;" class="filter-item" :placeholder="$t('table.language')" v-model="listQuery.language">
       </el-input>
 
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
-        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name" :value="item.key">
-        </el-option>
-      </el-select>
-
       <el-select clearable class="filter-item" style="width: 180px" v-model="listQuery.website_id" :placeholder="$t('table.website_id')">
         <el-option v-for="item in  siteIdOptions" :key="item.key" :label="item.display_name" :value="item.key">
         </el-option>
@@ -547,7 +542,6 @@ export default {
         // id: undefined
         search_text: undefined, // 按照username搜索
         language: undefined,
-        own_id: undefined,
         website_id: undefined,
         // type: undefined,
         service_date_str_begin: undefined, // 搜索开始时间
@@ -555,7 +549,6 @@ export default {
         sort: 'service_date_str', // 排序的字段，默认为id升序排序
         sort_dir: 'descending' // 'ascending'
       },
-      ownNameOptions: {},
       siteIdOptions: {},
       createdCustomerOptions: {},
       sortOptions: [ // 排序部分定义
@@ -567,7 +560,6 @@ export default {
       temp: { // update , create 数据的时候，会把数据放到该变量中。
         id: undefined,
         name: '',
-        own_id: '',
         trend: '',
         trendLang: '',
         created_customer_id: ''
@@ -645,10 +637,8 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-        this.ownNameOptions = response.data.ownNameOptions
         this.siteIdOptions = response.data.siteIdOptions
         this.listQuery.website_id = response.data.chosen_website_id
-        this.listQuery.own_id = response.data.chosen_own_id
         this.initComplete = true
         this.listLoading = false
         this.imgApiUrl = response.data.siteImgUrls

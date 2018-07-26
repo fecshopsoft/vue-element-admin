@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
       <div class="title-container">
-        <h3 class="title">{{$t('login.title')}}</h3>
+        <h3 class="title">{{$t('login.fec_title')}}</h3>
         <lang-select class="set-language"></lang-select>
       </div>
       <el-form-item prop="username">
@@ -24,6 +24,18 @@
 
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">{{$t('login.logIn')}}</el-button>
 
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <div  style="color:#aaa;text-align:center">
+        收集fecshop商城的用户访问数据
+        <br>
+        <br>
+        进行统计分析，帮助营销人员，分析推广广告数据的营销系统
+
+        <br>
+        <br>
+        官网：<a style="color:#fff" target="_blank" href="http://www.fecshop.com">www.Fecshop.com</a>
+        
+      </div>
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
@@ -33,7 +45,7 @@
       <br/>
       <social-sign />
     </el-dialog>
-
+    
   </div>
 </template>
 

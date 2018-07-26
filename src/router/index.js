@@ -73,10 +73,10 @@ export const asyncRouterMap = [
     meta: {
       title: 'system',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'customer/myaccount', component: _import('customer/myaccount'), name: 'customer-myaccount', meta: { title: 'my_account', icon: 'table', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
+      { path: 'customer/myaccount', component: _import('customer/myaccount'), name: 'customer-myaccount', meta: { title: 'my_account', icon: 'table', roles: ['super_admin', 'common_admin'] }},
       { path: 'customer/account', component: _import('customer/account'), name: 'customer-account', meta: { title: 'account_list', icon: 'table', roles: ['super_admin'] }},
       { path: 'customer/resource', component: _import('customer/resource'), name: 'customer-resource', meta: { title: 'account_resource', icon: 'clipboard', roles: ['super_admin'] }},
       { path: 'customer/resourcegroup', component: _import('customer/resourcegroup'), name: 'customer-resource-group', meta: { title: 'account_resource_group', icon: 'excel', roles: ['super_admin'] }},
@@ -91,13 +91,12 @@ export const asyncRouterMap = [
     meta: {
       title: 'common',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'common/website', component: _import('common/website'), name: 'common-website', meta: { title: 'common_website', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'common/channel', component: _import('common/channel'), name: 'common-channel', meta: { title: 'common_channel', icon: 'table', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'common/marketgroup', component: _import('common/marketgroup'), name: 'common-marketgroup', meta: { title: 'common_marketgroup', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'customer/accountchild', component: _import('customer/accountchild'), name: 'customer-account-child', meta: { title: 'customer_account_child', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'common/website', component: _import('common/website'), name: 'common-website', meta: { title: 'common_website', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'common/channel', component: _import('common/channel'), name: 'common-channel', meta: { title: 'common_channel', icon: 'table', roles: ['super_admin', 'common_admin'] }},
+      { path: 'common/marketgroup', component: _import('common/marketgroup'), name: 'common-marketgroup', meta: { title: 'common_marketgroup', icon: 'peoples', roles: ['super_admin', 'common_admin'] }}
     ]
   },
   {
@@ -108,13 +107,13 @@ export const asyncRouterMap = [
     meta: {
       title: 'advertise',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'advertise/generate', component: _import('advertise/generate'), name: 'advertise-generate', meta: { title: 'advertise_generate', icon: 'form', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'advertise/mutilgenerate', component: _import('advertise/mutilgenerate'), name: 'advertise-mutilgenerate', meta: { title: 'advertise_mutilgenerate', icon: 'excel', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'advertise/generatemlink', component: _import('advertise/generatemlink'), name: 'advertise-generatemlink', meta: { title: 'advertise_generatemlink', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'advertise/list', component: _import('advertise/list'), name: 'advertise-list', meta: { title: 'advertise_list', icon: 'theme', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'advertise/generate', component: _import('advertise/generate'), name: 'advertise-generate', meta: { title: 'advertise_generate', icon: 'form', roles: ['super_admin', 'common_admin'] }},
+      { path: 'advertise/mutilgenerate', component: _import('advertise/mutilgenerate'), name: 'advertise-mutilgenerate', meta: { title: 'advertise_mutilgenerate', icon: 'excel', roles: ['super_admin', 'common_admin'] }},
+      { path: 'advertise/generatemlink', component: _import('advertise/generatemlink'), name: 'advertise-generatemlink', meta: { title: 'advertise_generatemlink', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'advertise/list', component: _import('advertise/list'), name: 'advertise-list', meta: { title: 'advertise_list', icon: 'theme', roles: ['super_admin', 'common_admin'] }}
     ]
   },
 
@@ -126,23 +125,23 @@ export const asyncRouterMap = [
     meta: {
       title: 'base_statistics',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      // { path: 'basestics/initdata', component: _import('basestics/initdata'), name: 'basestics-initdata', meta: { title: 'basestics_initdata', icon: 'documentation', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/site', component: _import('basestics/site'), name: 'basestics-site', meta: { title: 'basestics_site', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/app', component: _import('basestics/app'), name: 'basestics-app', meta: { title: 'basestics_app', icon: 'dashboard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/refer', component: _import('basestics/refer'), name: 'basestics-refer', meta: { title: 'basestics_refer', icon: 'tab', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/sku', component: _import('basestics/sku'), name: 'basestics-sku', meta: { title: 'basestics_sku', icon: 'star', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/skurefer', component: _import('basestics/skurefer'), name: 'basestics-skurefer', meta: { title: 'basestics_skurefer', icon: 'clipboard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/search', component: _import('basestics/search'), name: 'basestics-search', meta: { title: 'basestics_search', icon: 'eye', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/searchlang', component: _import('basestics/searchlang'), name: 'basestics-searchlang', meta: { title: 'basestics_searchlang', icon: 'language', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/firsturl', component: _import('basestics/firsturl'), name: 'basestics-firsturl', meta: { title: 'basestics_firsturl', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/url', component: _import('basestics/url'), name: 'basestics-url', meta: { title: 'basestics_url', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/category', component: _import('basestics/category'), name: 'basestics-category', meta: { title: 'basestics_category', icon: 'excel', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/device', component: _import('basestics/device'), name: 'basestics-device', meta: { title: 'basestics_device', icon: 'example', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/country', component: _import('basestics/country'), name: 'basestics-country', meta: { title: 'basestics_country', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'basestics/browser', component: _import('basestics/browser'), name: 'basestics-browser', meta: { title: 'basestics_browser', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      // { path: 'basestics/initdata', component: _import('basestics/initdata'), name: 'basestics-initdata', meta: { title: 'basestics_initdata', icon: 'documentation', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/site', component: _import('basestics/site'), name: 'basestics-site', meta: { title: 'basestics_site', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/app', component: _import('basestics/app'), name: 'basestics-app', meta: { title: 'basestics_app', icon: 'dashboard', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/refer', component: _import('basestics/refer'), name: 'basestics-refer', meta: { title: 'basestics_refer', icon: 'tab', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/sku', component: _import('basestics/sku'), name: 'basestics-sku', meta: { title: 'basestics_sku', icon: 'star', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/skurefer', component: _import('basestics/skurefer'), name: 'basestics-skurefer', meta: { title: 'basestics_skurefer', icon: 'clipboard', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/search', component: _import('basestics/search'), name: 'basestics-search', meta: { title: 'basestics_search', icon: 'eye', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/searchlang', component: _import('basestics/searchlang'), name: 'basestics-searchlang', meta: { title: 'basestics_searchlang', icon: 'language', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/firsturl', component: _import('basestics/firsturl'), name: 'basestics-firsturl', meta: { title: 'basestics_firsturl', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/url', component: _import('basestics/url'), name: 'basestics-url', meta: { title: 'basestics_url', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/category', component: _import('basestics/category'), name: 'basestics-category', meta: { title: 'basestics_category', icon: 'excel', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/device', component: _import('basestics/device'), name: 'basestics-device', meta: { title: 'basestics_device', icon: 'example', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/country', component: _import('basestics/country'), name: 'basestics-country', meta: { title: 'basestics_country', icon: 'peoples', roles: ['super_admin', 'common_admin'] }},
+      { path: 'basestics/browser', component: _import('basestics/browser'), name: 'basestics-browser', meta: { title: 'basestics_browser', icon: 'international', roles: ['super_admin', 'common_admin'] }}
     ]
   },
   {
@@ -154,21 +153,21 @@ export const asyncRouterMap = [
     meta: {
       title: 'advertics_all_statics',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'adsallstics/site', component: _import('adsallstics/site'), name: 'adsallstics-site', meta: { title: 'adsallstics_site', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/refer', component: _import('adsallstics/refer'), name: 'adsallstics-refer', meta: { title: 'adsallstics_refer', icon: 'tab', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/sku', component: _import('adsallstics/sku'), name: 'adsallstics-sku', meta: { title: 'adsallstics_sku', icon: 'star', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/skurefer', component: _import('adsallstics/skurefer'), name: 'adsallstics-skurefer', meta: { title: 'adsallstics_skurefer', icon: 'clipboard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/search', component: _import('adsallstics/search'), name: 'adsallstics-search', meta: { title: 'adsallstics_search', icon: 'eye', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/searchlang', component: _import('adsallstics/searchlang'), name: 'adsallstics-searchlang', meta: { title: 'adsallstics_searchlang', icon: 'language', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/firsturl', component: _import('adsallstics/firsturl'), name: 'adsallstics-firsturl', meta: { title: 'adsallstics_firsturl', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/url', component: _import('adsallstics/url'), name: 'adsallstics-url', meta: { title: 'adsallstics_url', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/category', component: _import('adsallstics/category'), name: 'adsallstics-category', meta: { title: 'adsallstics_category', icon: 'excel', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/devide', component: _import('adsallstics/devide'), name: 'adsallstics-devide', meta: { title: 'adsallstics_devide', icon: 'example', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/country', component: _import('adsallstics/country'), name: 'adsallstics-country', meta: { title: 'adsallstics_country', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsallstics/browser', component: _import('adsallstics/browser'), name: 'adsallstics-browser', meta: { title: 'adsallstics_browser', icon: 'international', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'adsallstics/site', component: _import('adsallstics/site'), name: 'adsallstics-site', meta: { title: 'adsallstics_site', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/refer', component: _import('adsallstics/refer'), name: 'adsallstics-refer', meta: { title: 'adsallstics_refer', icon: 'tab', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/sku', component: _import('adsallstics/sku'), name: 'adsallstics-sku', meta: { title: 'adsallstics_sku', icon: 'star', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/skurefer', component: _import('adsallstics/skurefer'), name: 'adsallstics-skurefer', meta: { title: 'adsallstics_skurefer', icon: 'clipboard', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/search', component: _import('adsallstics/search'), name: 'adsallstics-search', meta: { title: 'adsallstics_search', icon: 'eye', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/searchlang', component: _import('adsallstics/searchlang'), name: 'adsallstics-searchlang', meta: { title: 'adsallstics_searchlang', icon: 'language', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/firsturl', component: _import('adsallstics/firsturl'), name: 'adsallstics-firsturl', meta: { title: 'adsallstics_firsturl', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/url', component: _import('adsallstics/url'), name: 'adsallstics-url', meta: { title: 'adsallstics_url', icon: 'international', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/category', component: _import('adsallstics/category'), name: 'adsallstics-category', meta: { title: 'adsallstics_category', icon: 'excel', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/devide', component: _import('adsallstics/devide'), name: 'adsallstics-devide', meta: { title: 'adsallstics_devide', icon: 'example', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/country', component: _import('adsallstics/country'), name: 'adsallstics-country', meta: { title: 'adsallstics_country', icon: 'peoples', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsallstics/browser', component: _import('adsallstics/browser'), name: 'adsallstics-browser', meta: { title: 'adsallstics_browser', icon: 'international', roles: ['super_admin', 'common_admin'] }}
     ]
   },
 
@@ -180,17 +179,17 @@ export const asyncRouterMap = [
     meta: {
       title: 'advertics_detail_statics',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'adsdetailstics/ads', component: _import('adsdetailstics/ads'), name: 'adsdetailstics-ads', meta: { title: 'adsdetailstics_ads', icon: 'shoppingCard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/person', component: _import('adsdetailstics/person'), name: 'adsdetailstics-person', meta: { title: 'adsdetailstics_person', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/group', component: _import('adsdetailstics/group'), name: 'adsdetailstics-group', meta: { title: 'adsdetailstics_group', icon: 'peoples', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/imager', component: _import('adsdetailstics/imager'), name: 'adsdetailstics-imager', meta: { title: 'adsdetailstics_imager', icon: 'theme', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/campaign', component: _import('adsdetailstics/campaign'), name: 'adsdetailstics-campaign', meta: { title: 'adsdetailstics_campaign', icon: 'money', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/childchannel', component: _import('adsdetailstics/childchannel'), name: 'adsdetailstics-childchannel', meta: { title: 'adsdetailstics_childchannel', icon: 'icon', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/channel', component: _import('adsdetailstics/channel'), name: 'adsdetailstics-channel', meta: { title: 'adsdetailstics_channel', icon: 'chart', roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'adsdetailstics/edm', component: _import('adsdetailstics/edm'), name: 'adsdetailstics-edm', meta: { title: 'adsdetailstics_edm', icon: 'email', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'adsdetailstics/ads', component: _import('adsdetailstics/ads'), name: 'adsdetailstics-ads', meta: { title: 'adsdetailstics_ads', icon: 'shoppingCard', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/person', component: _import('adsdetailstics/person'), name: 'adsdetailstics-person', meta: { title: 'adsdetailstics_person', icon: 'people', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/group', component: _import('adsdetailstics/group'), name: 'adsdetailstics-group', meta: { title: 'adsdetailstics_group', icon: 'peoples', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/imager', component: _import('adsdetailstics/imager'), name: 'adsdetailstics-imager', meta: { title: 'adsdetailstics_imager', icon: 'theme', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/campaign', component: _import('adsdetailstics/campaign'), name: 'adsdetailstics-campaign', meta: { title: 'adsdetailstics_campaign', icon: 'money', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/childchannel', component: _import('adsdetailstics/childchannel'), name: 'adsdetailstics-childchannel', meta: { title: 'adsdetailstics_childchannel', icon: 'icon', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/channel', component: _import('adsdetailstics/channel'), name: 'adsdetailstics-channel', meta: { title: 'adsdetailstics_channel', icon: 'chart', roles: ['super_admin', 'common_admin'] }},
+      { path: 'adsdetailstics/edm', component: _import('adsdetailstics/edm'), name: 'adsdetailstics-edm', meta: { title: 'adsdetailstics_edm', icon: 'email', roles: ['super_admin', 'common_admin'] }}
     ]
   },
   {
@@ -201,10 +200,10 @@ export const asyncRouterMap = [
     meta: {
       title: 'user_statistics',
       icon: 'shoppingCard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'siteadvertise/ads', component: _import('siteadvertise/ads'), name: 'siteadvertise-ads', meta: { title: 'siteadvertise_ads', icon: 'shoppingCard', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'siteadvertise/ads', component: _import('siteadvertise/ads'), name: 'siteadvertise-ads', meta: { title: 'siteadvertise_ads', icon: 'shoppingCard', roles: ['super_admin', 'common_admin'] }}
     ]
   },
   {
@@ -215,10 +214,10 @@ export const asyncRouterMap = [
     meta: {
       title: 'user_statistics',
       icon: 'clipboard',
-      roles: ['super_admin', 'common_admin', 'common_admin_child']
+      roles: ['super_admin', 'common_admin']
     },
     children: [
-      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'people', roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'userstics/userdata', component: _import('userstics/userdata'), name: 'userstics-userdata', meta: { title: 'userstics_userdata', icon: 'people', roles: ['super_admin', 'common_admin'] }}
     ]
   },
 
@@ -285,13 +284,13 @@ export const asyncRouterMap = [
     name: 'charts',
     meta: {
       title: 'charts',
-      roles: ['super_admin', 'common_admin', 'common_admin_child'],
+      roles: ['super_admin', 'common_admin'],
       icon: 'chart'
     },
     children: [
-      { path: 'keyboard', component: _import('charts/keyboard'), name: 'keyboardChart', meta: { title: 'keyboardChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'line', component: _import('charts/line'), name: 'lineChart', meta: { title: 'lineChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }},
-      { path: 'mixchart', component: _import('charts/mixChart'), name: 'mixChart', meta: { title: 'mixChart', noCache: true, roles: ['super_admin', 'common_admin', 'common_admin_child'] }}
+      { path: 'keyboard', component: _import('charts/keyboard'), name: 'keyboardChart', meta: { title: 'keyboardChart', noCache: true, roles: ['super_admin', 'common_admin'] }},
+      { path: 'line', component: _import('charts/line'), name: 'lineChart', meta: { title: 'lineChart', noCache: true, roles: ['super_admin', 'common_admin'] }},
+      { path: 'mixchart', component: _import('charts/mixChart'), name: 'mixChart', meta: { title: 'mixChart', noCache: true, roles: ['super_admin', 'common_admin'] }}
     ]
   },
 

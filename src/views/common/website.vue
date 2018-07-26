@@ -8,10 +8,6 @@
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
 
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
-        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
       <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
         <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
@@ -51,12 +47,6 @@
         </template>
       </el-table-column>
      
-      <el-table-column min-width="100px" align="left" :label="$t('table.own_name')">
-        <template slot-scope="scope">
-          <span>{{scope.row.own_id | parseOwnName(ownNameOptions)}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column min-width="100px" align="left" :label="$t('table.status')">
         <template slot-scope="scope">
           <span>{{scope.row.status | parseStatus()}}</span>
@@ -127,13 +117,6 @@
         <el-form-item :label="$t('table.status')" prop="status">
           <el-select clearable class="filter-item" v-model="temp.status" placeholder="Please select">
             <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.own_name')" prop="own_name">
-          <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
-            <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>

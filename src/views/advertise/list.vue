@@ -12,10 +12,6 @@
       <el-date-picker clearable @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
 
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.own_id" :placeholder="$t('table.own_name')">
-        <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
@@ -26,18 +22,18 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%"  @selection-change="changeFun" >
-      <el-table-column fixed width="100px" align="left" :label="$t('table.fid')">
+      <el-table-column fixed min-width="200px" align="left" :label="$t('table.fid')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.advertise_id}}</span>
         </template>
       </el-table-column>
       
-      <el-table-column width="100px" align="left" :label="$t('table.channel')">
+      <el-table-column min-width="100px" align="left" :label="$t('table.channel')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.fec_source}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100px" align="left" :label="$t('table.channel_child_name')">
+      <el-table-column min-width="100px" align="left" :label="$t('table.channel_child_name')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.fec_medium}}</span>
         </template>
@@ -98,12 +94,7 @@
         <el-form-item :label="$t('table.fid')" prop="fid">
           <el-input v-model="temp.advertise_id"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('table.own_name')" prop="own_name">
-          <el-select clearable class="filter-item" v-model="temp.own_id" placeholder="Please select">
-            <el-option v-for="item in  ownNameOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item :label="$t('table.origin_url')" prop="origin_url">
           <el-input v-model="temp.url"></el-input>
         </el-form-item>

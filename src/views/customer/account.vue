@@ -7,24 +7,16 @@
       </el-date-picker>
       <el-date-picker clearable  @keyup.enter.native="handleFilter" style="width: 150px;" class="filter-item" v-model="listQuery.created_end" type="date" format="yyyy-MM-dd" :placeholder="$t('table.created_end')">
       </el-date-picker>
-
-
+      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
+        <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        </el-option>
+      </el-select>
 
       <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.type" :placeholder="$t('table.account_type')">
         <el-option v-for="item in  typeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.parent_id" :placeholder="$t('table.account_parent_id')">
-        <el-option v-for="item in  commonAdminOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
 
-
-
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.status" :placeholder="$t('table.status')">
-        <el-option v-for="item in  statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
@@ -52,14 +44,19 @@
           <span class="link-type">{{scope.row.username}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="180px" align="left" :label="$t('table.market_group_name')">
+        <template slot-scope="scope">
+          <span>{{scope.row.market_group_id | parseMarketGroup(marketGroupOptions)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="80px" align="left" :label="$t('table.job_type_name')">
+        <template slot-scope="scope">
+          <span>{{scope.row.job_type | parseJobType(jobTypeOptions)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="150px" align="left" :label="$t('table.account_type')">
         <template slot-scope="scope">
           <span>{{scope.row.type | parseType(typeOptions)}}</span>
-        </template>
-      </el-table-column>
-       <el-table-column width="110px" align="left" :label="$t('table.account_parent_id')">
-        <template slot-scope="scope">
-          <span>{{scope.row.parent_id | parseCommonAdmin(commonAdminOptions)}}</span>
         </template>
       </el-table-column>
       <el-table-column width="80px" align="left" :label="$t('table.status')">
@@ -73,12 +70,6 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="110px" align="left" :label="$t('table.birth_date')">
-        <template slot-scope="scope">
-          <span>{{scope.row.birth_date * 1000 | parseTime('{y}-{m}-{d}') | dateFilter() }}</span>
-        </template>
-      </el-table-column>
-     
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!--
@@ -86,6 +77,7 @@
           
           <el-button v-else disabled type="primary" size="mini" >{{$t('table.payment')}}</el-button>
           -->
+          <el-button type="primary" size="mini" @click="handleUpdateRole(scope.row)">{{$t('table.update_customer_role')}}</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,scope.$index)">{{$t('table.delete')}}
           </el-button>
@@ -107,20 +99,9 @@
         <el-form-item :label="$t('table.password')" >
           <el-input type="password" v-model="temp.password"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('table.email')" prop="email">
-          <el-input v-model="temp.email"></el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.telephone')" prop="telephone">
-          <el-input v-model="temp.telephone"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('table.name')" prop="name">
-          <el-input v-model="temp.name"></el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.sex')">
-          <el-select clearable class="filter-item" v-model="temp.sex" placeholder="Please select">
-            <el-option v-for="item in  sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        <el-form-item :label="$t('table.account_type')">
+          <el-select clearable class="filter-item" v-model="temp.type" placeholder="Please select">
+            <el-option v-for="item in  typeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -130,34 +111,18 @@
             </el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item :label="$t('table.account_type')">
-          <el-select clearable class="filter-item" v-model="temp.type" placeholder="Please select">
-            <el-option v-for="item in  typeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        <el-form-item :label="$t('table.market_group_name')">
+          <el-select clearable class="filter-item" v-model="temp.market_group_id" placeholder="Please select">
+            <el-option v-for="item in  marketGroupOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item :label="$t('table.account_parent_id')">
-          <el-select clearable class="filter-item" v-model="temp.parent_id" placeholder="Please select">
-            <el-option v-for="item in  commonAdminOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
+        <el-form-item :label="$t('table.job_type_name')">
+          <el-select clearable class="filter-item" v-model="temp.job_type" placeholder="Please select">
+            <el-option v-for="item in  jobTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item :label="$t('table.age')" prop="age">
-          <el-input v-model="temp.age"></el-input>
-        </el-form-item>
-        
-        <el-form-item :label="$t('table.birth_date')" prop="birth_date">
-          <el-date-picker v-model="temp.birth_date" type="date" placeholder="Please pick a date">
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.remark')" >
-          <tinymce :height=400 ref="editor" v-model="temp.remark"></tinymce>
-        </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{$t('table.cancel')}}</el-button>
@@ -166,12 +131,14 @@
       </div>
     </el-dialog>
 
-    <el-dialog  :title="$t('table.edit_payment_info')" :visible.sync="dialogFormVisible2">
+    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible2">
       <el-form :rules="rules" ref="dataForm2" :model="temp" label-position="left" label-width="140px" style='width: 800px; margin-left:50px; margin-top:10px'>
         
-        <el-form-item :label="$t('table.website_count')" prop="website_count">
-          <el-input v-model="temp.website_count"></el-input>
-        </el-form-item>
+        <template v-for="(role, tab_key) in rolesArr">
+          <div :key="tab_key" style="margin:10px 0 20px 0">
+            <el-checkbox v-model="role.checked"  :label="role.name" :key="role.id">{{role.name}}</el-checkbox>
+          </div>
+        </template>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -184,7 +151,7 @@
 
 <script>
 // 从api包中导入用于ajax的函数
-import { fetchList, createOne, updateOne, updateOnePayInfo, deleteOne, batchDelete } from '@/api/customer/account'
+import { fetchList, createOne, updateOne, deleteOne, batchDelete, fetchRole, updateOneRole } from '@/api/customer/account'
 import waves from '@/directive/waves' // 水波纹指令
 // import { parseTime } from '@/utils' // 时间格式处理
 import Tinymce from '@/components/Tinymce' // 富文本编辑框
@@ -196,6 +163,10 @@ const statusOptions = [ // 性别数组，用于生成sex select，在搜索部�
   { key: 1, display_name: 'Enable' },
   { key: 2, display_name: 'Disable' }
 ]
+const jobTypeOptions = [ // 性别数组，用于生成sex select，在搜索部分和弹框的dialog部分使用到
+  { key: 1, display_name: '营销员' },
+  { key: 2, display_name: '广告美工' }
+]
 export default {
   name: 'complexTable',
   components: { Tinymce }, // 引入的组件
@@ -204,12 +175,15 @@ export default {
   },
   data() {
     return {
+      rolesArr: {},
       tableKey: 0,
       list: null,
       multipleSelection: [],
       total: null,
       listLoading: true,
       customerType: 0,
+      jobTypeOptions,
+      marketGroupOptions: {},
       // filter-container 部分的搜索，以及分页部分
       listQuery: { // 当前的查询参数值
         page: 1, // 页数
@@ -287,6 +261,22 @@ export default {
       return sexValue[type]
     },
     */
+    parseMarketGroup(value, marketGroupOptions) {
+      for (var x in marketGroupOptions) {
+        if (marketGroupOptions[x]['key'] === value) {
+          return marketGroupOptions[x]['display_name']
+        }
+      }
+      return ''
+    },
+    parseJobType(value, jobTypeOptions) {
+      for (var x in jobTypeOptions) {
+        if (jobTypeOptions[x]['key'] === value) {
+          return jobTypeOptions[x]['display_name']
+        }
+      }
+      return ''
+    },
     parseType(type, typeOptions) {
       for (var x in typeOptions) {
         var y = typeOptions[x]
@@ -358,8 +348,10 @@ export default {
         this.list = response.data.items
         this.total = response.data.total
         this.typeOptions = response.data.typeOps
-        this.customerType = response.data.customerType
-        this.commonAdminOptions = response.data.commonAdminOps
+        this.marketGroupOptions = response.data.marketGroupOps
+        // this.typeOptions = response.data.typeOps
+        // this.customerType = response.data.customerType
+        // this.commonAdminOptions = response.data.commonAdminOps
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -550,20 +542,24 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-
-    handleUpdate2(row) {
-      // this.$refs.editor.destroyTinymce()
-      // console.log(this.$refs)
-      // console.log(this.$refs.editor)
-      // var refs = this.$refs
-      this.temp = Object.assign({}, row) // copy obj
-      if (this.temp.payment_end_time && this.isNumber(this.temp.payment_end_time)) {
-        this.temp.payment_end_time = new Date(this.temp.payment_end_time * 1000)
-      }
-      this.dialogStatus = 'update'
-      this.dialogFormVisible2 = true
-      this.$nextTick(() => {
-        this.$refs['dataForm2'].clearValidate()
+    handleUpdateRole(row) {
+      // this.temp = Object.assign({}, row) // copy obj
+      fetchRole({ 'customer_id': row.id, 'parent_id': row.parent_id }).then(response => {
+        this.rolesArr = Object.assign({}, response.data.allRole)
+        // this.checkedResourceArr = response.data.resourceChecked
+        this.dialogStatus = 'updateRole'
+        this.currentCustomerId = row.id
+        this.currentOwnId = row.own_id
+        this.dialogFormVisible2 = true
+        this.$nextTick(() => {
+          this.$refs['dataForm2'].clearValidate()
+        })
+      }).catch(() => {
+        this.listLoading = false
+        this.$message({
+          message: '更新失败',
+          type: 'error'
+        })
       })
     },
 
@@ -606,30 +602,35 @@ export default {
     updateData2() {
       this.$refs['dataForm2'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          var payment_end_time = Date.parse(new Date(tempData.payment_end_time)) / 1000 // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          tempData.payment_end_time = payment_end_time
-          tempData.website_count = parseInt(tempData.website_count)
-          tempData.website_day_max_count = parseInt(tempData.website_day_max_count)
-          updateOnePayInfo(tempData).then(() => {
+          // const tempData = Object.assign({}, this.temp)
+          // console.log({ 'role_id': this.currentCuctomerId, 'resources': this.resourcesArr})
+          var arr = []
+          for (var x in this.rolesArr) {
+            var role = this.rolesArr[x]
+            if (role.checked === true) {
+              arr.push(role.id)
+            }
+          }
+          updateOneRole({ 'own_id': this.currentOwnId, 'customer_id': this.currentCustomerId, 'roles': arr }).then(() => {
             this.getList()
             this.dialogFormVisible2 = false
             this.$notify({
               title: '成功',
-              message: '更新成功',
+              message: '更新资源成功',
               type: 'success',
               duration: 2000
             })
           }).catch(() => {
             this.listLoading = false
             this.$message({
-              message: '失败',
+              message: '更新失败',
               type: 'error'
             })
           })
         }
       })
     },
+
     handleDelete(row) {
       this.$notify({
         title: '成功',
